@@ -1,4 +1,4 @@
-const CACHE = 'scent-v1';
+const CACHE = 'scent-v2';
 const BASE = '/scent-reserve/';
 const ASSETS = [
   BASE + 'daily-recommendation.html',
