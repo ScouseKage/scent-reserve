@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spray Guide · Scent Reserve</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0b08;
+  --surface: #13110d;
+  --surface2: #1c1812;
+  --gold: #c9a84c;
+  --gold-dim: #7a6330;
+  --cream: #e8dfc8;
+  --cream-dim: #8a8070;
+  --rule: rgba(201,168,76,0.18);
+  --c2: #a8c878;
+  --c3: #c9a84c;
+  --c4: #c47a3a;
+  --spring: #6aab7e;
+  --summer: #d4914a;
+  --autumn: #c45a2a;
+  --winter: #5a8ab0;
+  --p1: #7ab8bf;
+  --p2: #c9a84c;
+  --p3: #7abf8a;
+  --p4: #bf7a7a;
+  --p5: #b07abf;
+  --p6: #bf9f6a;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  padding: 48px 20px 80px;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.7;
+}
+
+.wrap { max-width: 680px; margin: 0 auto; position:relative; z-index:1; }
+
+header { text-align:center; margin-bottom:48px; animation: fadeDown 0.5s ease both; }
+
+@keyframes fadeDown { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp   { from { opacity:0; transform:translateY(12px);  } to { opacity:1; transform:translateY(0); } }
+
+.eyebrow { font-size:.58rem; letter-spacing:.4em; text-transform:uppercase; color:var(--cream-dim); margin-bottom:14px; }
+
+h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.4rem,7vw,3.8rem); font-weight:300; line-height:1; letter-spacing:.04em; color:var(--cream); }
+h1 em { font-style:italic; color:var(--gold); }
+
+.rule-gold { width:80px; height:1px; background:linear-gradient(90deg,transparent,var(--gold-dim),transparent); margin:18px auto; }
+.subhead { font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; color:var(--cream-dim); }
+
+.legend { display:flex; flex-wrap:wrap; gap:8px 20px; justify-content:center; margin-bottom:40px; animation:fadeUp 0.4s ease 0.1s both; }
+.legend-item { display:flex; align-items:center; gap:6px; font-size:.54rem; letter-spacing:.15em; text-transform:uppercase; color:var(--cream-dim); }
+.legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+
+.seasons { display:flex; gap:4px; flex-wrap:wrap; }
+.s-badge { font-size:.48rem; letter-spacing:.1em; padding:1px 5px; border-radius:1px; text-transform:uppercase; border:1px solid; font-weight:500; }
+.s-badge.sp { color:var(--spring); border-color:var(--spring); }
+.s-badge.su { color:var(--summer); border-color:var(--summer); }
+.s-badge.au { color:var(--autumn); border-color:var(--autumn); }
+.s-badge.wi { color:var(--winter); border-color:var(--winter); }
+
+.pair-mark { font-size:1rem; line-height:1; flex-shrink:0; opacity:.9; }
+
+.frag-list { display:flex; flex-direction:column; gap:8px; }
+
+.frag-card {
+  background:var(--surface);
+  border:1px solid rgba(201,168,76,0.12);
+  border-radius:2px;
+  padding:14px 16px;
+  transition:border-color 0.15s, transform 0.1s;
+  animation:fadeUp 0.45s ease both;
+}
+.frag-card:hover { border-color:var(--gold-dim); transform:translateX(3px); }
+
+.card-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap; }
+.card-num { font-size:.58rem; color:var(--gold); letter-spacing:.1em; width:30px; flex-shrink:0; }
+.card-name { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-weight:400; flex:1; min-width:120px; }
+
+.spray-dots { display:flex; gap:5px; flex-shrink:0; }
+.spray-dot { width:10px; height:10px; border-radius:50%; border:1.5px solid rgba(201,168,76,0.2); background:transparent; transition:transform 0.15s; }
+.spray-dot.filled { border-color:transparent; }
+.frag-card:hover .spray-dot.filled { transform:scale(1.15); }
+
+.spray-label { font-family:'Cormorant Garamond',serif; font-size:1rem; font-weight:300; flex-shrink:0; min-width:16px; text-align:right; }
+
+.card-body { display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; padding-top:10px; border-top:1px solid rgba(201,168,76,0.08); }
+@media (max-width:440px) { .card-body { grid-template-columns:1fr; } }
+
+.card-section-label { font-size:.48rem; letter-spacing:.25em; text-transform:uppercase; color:var(--gold-dim); margin-bottom:3px; }
+.card-section-value { font-size:.6rem; color:var(--cream-dim); line-height:1.6; letter-spacing:.03em; }
+.card-section-value em { font-style:normal; color:var(--cream); }
+
+/* Tracker row */
+.card-tracker {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 10px;
+  margin-top: 8px;
+  border-top: 1px solid rgba(201,168,76,0.06);
+}
+
+.tracker-left { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+.last-worn { font-size:.54rem; color:var(--cream-dim); letter-spacing:.06em; }
+.last-worn span { color:var(--gold); }
+
+.wore-btn {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.25);
+  color: var(--gold);
+  font-family: 'DM Mono', monospace;
+  font-size: .5rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.wore-btn:hover { background:rgba(201,168,76,0.18); border-color:var(--gold); }
+.wore-btn:active { transform:scale(0.97); }
+
+.wear-count { font-size:.5rem; color:var(--cream-dim); letter-spacing:.1em; }
+
+/* Bottle level bar */
+.bottle-wrap { display:flex; align-items:center; gap:8px; }
+.bottle-label { font-size:.48rem; letter-spacing:.15em; text-transform:uppercase; color:var(--cream-dim); white-space:nowrap; }
+
+.bottle-track {
+  width: 80px;
+  height: 6px;
+  background: rgba(201,168,76,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+}
+
+.bottle-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.bottle-meta { font-size:.5rem; color:var(--cream-dim); letter-spacing:.06em; white-space:nowrap; }
+
+.warning { font-size:.48rem; letter-spacing:.12em; text-transform:uppercase; padding:2px 6px; border-radius:1px; background:rgba(196,90,42,0.15); color:#c47a3a; border:1px solid rgba(196,90,42,0.3); display:inline-block; margin-left:6px; vertical-align:middle; }
+
+.section-divider { border:none; border-top:1px solid rgba(201,168,76,0.08); margin:36px 0; }
+
+.pairing-section { animation:fadeUp 0.5s ease 0.5s both; }
+
+.section-label { font-size:.54rem; letter-spacing:.35em; text-transform:uppercase; color:var(--gold); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--rule); }
+
+.pair-list { display:flex; flex-direction:column; gap:8px; }
+
+.pair-card { background:var(--surface); border:1px solid rgba(255,255,255,0.08); border-radius:2px; padding:14px 16px; transition:border-color 0.15s; }
+.pair-card:hover { border-color:rgba(255,255,255,0.25); }
+
+.pair-top { display:flex; align-items:center; gap:8px; margin-bottom:10px; flex-wrap:wrap; }
+.pair-names { font-family:'Cormorant Garamond',serif; font-size:1rem; flex:1; }
+.pair-plus { font-size:.8rem; color:var(--cream-dim); opacity:.6; }
+.pair-nums { font-size:.56rem; letter-spacing:.1em; opacity:.8; flex-shrink:0; }
+
+.pair-body { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px 12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); }
+@media (max-width:460px) { .pair-body { grid-template-columns:1fr 1fr; } }
+
+.rules { margin-top:36px; background:var(--surface2); border:1px solid var(--rule); border-radius:2px; padding:20px 24px; animation:fadeUp 0.5s ease 0.6s both; }
+.rules-label { font-size:.54rem; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--rule); }
+.rules-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.rules-list li { font-size:.6rem; color:var(--cream-dim); line-height:1.65; padding-left:14px; position:relative; letter-spacing:.03em; }
+.rules-list li::before { content:'—'; position:absolute; left:0; color:var(--gold-dim); }
+
+footer { margin-top:48px; text-align:center; font-size:.54rem; letter-spacing:.25em; text-transform:uppercase; color:var(--cream-dim); opacity:.35; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Scent Reserve · Personal Collection</div>
+  <h1>The <em>Spray</em> Guide</h1>
+  <div class="rule-gold"></div>
+  <div class="subhead">How many · Where · Season · Tracker · Level</div>
+</header>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c2)"></div>2 sprays</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c3)"></div>3 sprays</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--c4)"></div>4 sprays</div>
+  <div class="legend-item"><span style="color:var(--spring);font-size:.6rem">Sp</span>&nbsp;Spring</div>
+  <div class="legend-item"><span style="color:var(--summer);font-size:.6rem">Su</span>&nbsp;Summer</div>
+  <div class="legend-item"><span style="color:var(--autumn);font-size:.6rem">Au</span>&nbsp;Autumn</div>
+  <div class="legend-item"><span style="color:var(--winter);font-size:.6rem">Wi</span>&nbsp;Winter</div>
+  <div class="legend-item"><span style="color:var(--p1);font-size:.9rem">✦</span><span style="color:var(--p2);font-size:.9rem">✦</span><span style="color:var(--p3);font-size:.9rem">✦</span><span style="color:var(--p4);font-size:.9rem">✦</span><span style="color:var(--p5);font-size:.9rem">✦</span><span style="color:var(--p6);font-size:.9rem">✦</span>&nbsp;Pair colour</div>
+</div>
+
+<div class="frag-list" id="fragList"></div>
+
+<hr class="section-divider">
+
+<div class="pairing-section">
+  <div class="section-label">Pairing Spray Counts</div>
+  <div class="pair-list">
+
+    <div class="pair-card" style="border-left:3px solid var(--p1)">
+      <div class="pair-top">
+        <div class="pair-names"><span style="color:var(--p1)">✦</span> Green Irish Tweed <span class="pair-plus">+</span> Terre d'Hermès</div>
+        <div class="pair-nums" style="color:var(--p1)">318 + 157</div>
+      </div>
+      <div class="pair-body">
+        <div><div class="card-section-label">318 sprays</div><div class="card-section-value"><em>2</em> — both sides of neck</div></div>
+        <div><div class="card-section-label">157 sprays</div><div class="card-section-value"><em>1</em> — one wrist, applied first</div></div>
+        <div><div class="card-section-label">Total</div><div class="card-section-value"><em>3 sprays</em> · Spring</div></div>
+      </div>
+    </div>
+
+    <div class="pair-card" style="border-left:3px solid var(--p2)">
+      <div class="pair-top">
+        <div class="pair-names"><span style="color:var(--p2)">✦</span> Tobacco Vanille <span class="pair-plus">+</span> Angels' Share</div>
+        <div class="pair-nums" style="color:var(--p2)">223 + 330</div>
+      </div>
+      <div class="pair-body">
+        <div><div class="card-section-label">223 sprays</div><div class="card-section-value"><em>1</em> — one side of neck</div></div>
+        <div><div class="card-section-label">330 sprays</div><div class="card-section-value"><em>1</em> — one wrist</div></div>
+        <div><div class="card-section-label">Total</div><div class="card-section-value"><em>2 sprays</em> · Autumn / Winter</div></div>
+      </div>
+    </div>
+
+    <div class="pair-card" style="border-left:3px solid var(--p3)">
+      <div class="pair-top">
+        <div class="pair-names"><span style="color:var(--p3)">✦</span> Baccarat Rouge 540 <span class="pair-plus">+</span> Lime Basil &amp; Mandarin</div>
+        <div class="pair-nums" style="color:var(--p3)">149 + 346</div>
+      </div>
+      <div class="pair-body">
+        <div><div class="card-section-label">346 sprays</div><div class="card-section-value"><em>2</em> — both wrists, applied first</div></div>
+        <div><div class="card-section-label">149 sprays</div><div class="card-section-value"><em>1</em> — one side of neck</div></div>
+        <div><div class="card-section-label">Total</div><div class="card-section-value"><em>3 sprays</em> · Summer</div></div>
+      </div>
+    </div>
+
+    <div class="pair-card" style="border-left:3px solid var(--p4)">
+      <div class="pair-top">
+        <div class="pair-names"><span style="color:var(--p4)">✦</span> Oud Saffron <span class="pair-plus">+</span> Tuscan Leather</div>
+        <div class="pair-nums" style="color:var(--p4)">170 + 412</div>
+      </div>
+      <div class="pair-body">
+        <div><div class="card-section-label">412 sprays</div><div class="card-section-value"><em>1</em> — one wrist, applied first</div></div>
+        <div><div class="card-section-label">170 sprays</div><div class="card-section-value"><em>1</em> — one side of neck</div></div>
+        <div><div class="card-section-label">Total</div><div class="card-section-value"><em>2 sprays</em> · Winter evenings only</div></div>
+      </div>
+    </div>
+
+    <div class="pair-card" style="border-left:3px solid var(--p5)">
+      <div class="pair-top">
+        <div class="pair-names"><span style="color:var(--p5)">✦</span> Lost Cherry <span class="pair-plus">+</span> Bitter Peach</div>
+        <div class="pair-nums" style="color:var(--p5)">494 + 219</div>
+      </div>
+      <div class="pair-body">
+        <div><div class="card-section-label">494 sprays</div><div class="card-section-value"><em>1</em> — one side of neck, applied first</div></div>
+        <div><div class="card-section-label">219 sprays</div><div class="card-section-value"><em>1</em> — one wrist</div></div>
+        <div><div class="card-section-label">Total</div><div class="card-section-value"><em>2 sprays</em> · Autumn / Winter evenings</div></div>
+      </div>
+    </div>
+
+    <div class="pair-card" style="border-left:3px solid var(--p6)">
+      <div class="pair-top">
+        <div class="pair-names"><span style="color:var(--p6)">✦</span> Eros <span class="pair-plus">+</span> Baccarat Rouge 540</div>
+        <div class="pair-nums" style="color:var(--p6)">120 + 149</div>
+      </div>
+      <div class="pair-body">
+        <div><div class="card-section-label">149 sprays</div><div class="card-section-value"><em>1</em> — one wrist, applied first</div></div>
+        <div><div class="card-section-label">120 sprays</div><div class="card-section-value"><em>1</em> — one side of neck</div></div>
+        <div><div class="card-section-label">Total</div><div class="card-section-value"><em>2 sprays</em> · Spring / Autumn</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="rules">
+  <div class="rules-label">Application Rules</div>
+  <ul class="rules-list">
+    <li>Never rub after spraying — it breaks down the scent molecules and flattens the drydown.</li>
+    <li>Skin retains fragrance better when moisturised — unscented lotion or Vaseline on pulse points before spraying extends wear significantly.</li>
+    <li>Pulse points (neck, wrists) generate heat which amplifies projection. Neck gives most presence, wrists are more subtle.</li>
+    <li>Fabric holds fragrance longer than skin but prevents the scent from evolving — fine for longevity, not ideal for appreciating a complex fragrance.</li>
+    <li><strong style="color:var(--gold)">Reduce by 1 spray</strong> if you're indoors in a heated space, it's a warm or hot day, you're in a small enclosed space (car, office, lift), or the occasion calls for subtlety.</li>
+    <li><strong style="color:var(--gold)">Add 1 spray</strong> if it's cold and you're staying outdoors, you're in a noisy smell environment (bar, restaurant, outdoors in wind), or you're wearing one of the lighter fragrances (162, 318, 346) and want more presence.</li>
+    <li><strong style="color:var(--cream)">Hard ceilings that never move</strong> — 170, 175, 219, 494, 514: 2 sprays absolute maximum regardless of conditions.</li>
+    <li>When layering a pair, always apply the heavier or base-heavy scent first. Wait 2–3 minutes before applying the second.</li>
+  </ul>
+</div>
+
+<footer>Scent Reserve · Spray Guide · Personal Collection</footer>
+
+</div>
+
+<script>
+// ── Data ────────────────────────────────────────────────────────────────────
+const FRAGS = [
+  { id:'108', house:"Penhaligon's", name:'Halfeti',            sprays:2, color:'--c3', seasons:['sp','au','wi'],
+    placement:'One side of neck, one wrist',
+    note:'Dense oud-rose. 2 gives plenty of presence without overwhelming the room.',
+    pairs:[] },
+  { id:'120', house:'Versace', name:'Eros',               sprays:3, color:'--c3', seasons:['sp','au'],
+    placement:'Both sides of neck, one wrist',
+    note:'Strong projection already — 3 is plenty. Back to 2 in warm weather or enclosed spaces.',
+    pairs:[{color:'--p6', partner:'149', title:'Pairs with 149'}] },
+  { id:'149', house:'Maison Francis Kurkdjian', name:'Baccarat Rouge 540', sprays:2, color:'--c3', seasons:['sp','su','au','wi'],
+    placement:'One side of neck, one wrist',
+    note:'Deceptively potent. The sweetness amplifies in heat — 2 is the move, especially indoors.',
+    pairs:[{color:'--p3', partner:'346', title:'Pairs with 346'},{color:'--p6', partner:'120', title:'Pairs with 120'}] },
+  { id:'157', house:'Hermès', name:"Terre d'Hermès",     sprays:3, color:'--c3', seasons:['sp','au'],
+    placement:'Both sides of neck, one wrist',
+    note:"Well-behaved and moderate projection. 3 works in all conditions — earthy notes don't overpower.",
+    pairs:[{color:'--p1', partner:'318', title:'Pairs with 318'}] },
+  { id:'162', house:'Maison Margiela', name:'Bleecker Street',    sprays:4, color:'--c2', seasons:['sp','su'], bottleMl:30,
+    placement:'Both sides of neck, both wrists',
+    note:'Low sillage by nature — needs generous application to register at all.',
+    pairs:[] },
+  { id:'170', house:'Tom Ford', name:'Oud Saffron',        sprays:2, color:'--c4', seasons:['wi'],
+    placement:'One side of neck, one wrist',
+    note:'Spiced oud is aggressive. 2 is the maximum — 1 on the neck alone is sufficient indoors.',
+    warning:true,
+    pairs:[{color:'--p4', partner:'412', title:'Pairs with 412'}] },
+  { id:'175', house:'Louis Vuitton', name:'Ombre Nomade',       sprays:2, color:'--c4', seasons:['wi'],
+    placement:'One side of neck, one wrist',
+    note:'18+ hours from 2 sprays as proven. Skin only — fabric extends wear indefinitely.',
+    warning:true,
+    pairs:[] },
+  { id:'219', house:'Tom Ford', name:'Bitter Peach',       sprays:2, color:'--c3', seasons:['au','wi'],
+    placement:'One side of neck, one wrist',
+    note:'The rum and peach accord gets cloying quickly. 2 is the ceiling — evening use only.',
+    pairs:[{color:'--p5', partner:'494', title:'Pairs with 494'}] },
+  { id:'223', house:'Tom Ford', name:'Tobacco Vanille',    sprays:3, color:'--c4', seasons:['au','wi'],
+    placement:'Both sides of neck, one wrist',
+    note:'Rich but well-mannered. 3 in cold weather is ideal. Drop to 2 in central heating.',
+    pairs:[{color:'--p2', partner:'330', title:'Pairs with 330'}] },
+  { id:'330', house:'Kilian', name:"Angels' Share",      sprays:3, color:'--c3', seasons:['au','wi'],
+    placement:'Both sides of neck, one wrist',
+    note:'Warm and boozy but not aggressive. 3 is comfortable — drop to 2 in warm indoor settings.',
+    pairs:[{color:'--p2', partner:'223', title:'Pairs with 223'}] },
+  { id:'318', house:'Creed', name:'Green Irish Tweed',  sprays:3, color:'--c2', seasons:['sp','su','au','wi'],
+    placement:'Both sides of neck, one wrist',
+    note:"Light projection — can afford 3. A 4th won't hurt on cold days.",
+    pairs:[{color:'--p1', partner:'157', title:'Pairs with 157'}] },
+  { id:'346', house:'Jo Malone', name:'Lime Basil & Mandarin', sprays:4, color:'--c2', seasons:['su'],
+    placement:'Both sides of neck, both wrists',
+    note:'Light and citrus-driven — needs volume. Fades faster than most, so spread it around.',
+    pairs:[{color:'--p3', partner:'149', title:'Pairs with 149'}] },
+  { id:'412', house:'Tom Ford', name:'Tuscan Leather',     sprays:2, color:'--c4', seasons:['au','wi'],
+    placement:'One side of neck, one wrist',
+    note:'Powerful leather that carries itself. 2 is assertive without being aggressive.',
+    pairs:[{color:'--p4', partner:'170', title:'Pairs with 170'}] },
+  { id:'494', house:'Tom Ford', name:'Lost Cherry',        sprays:2, color:'--c3', seasons:['au','wi'],
+    placement:'One side of neck, one wrist',
+    note:'Intimate rather than projecting — 2 keeps it seductive. More than that and the sweetness dominates.',
+    pairs:[{color:'--p5', partner:'219', title:'Pairs with 219'}] },
+  { id:'514', house:'Tom Ford', name:'Black Orchid',       sprays:2, color:'--c4', seasons:['au','wi'],
+    placement:'One side of neck, one wrist',
+    note:'Theatrical by design — 2 is a statement. 3 is a confrontation. Never more than 2 indoors.',
+    pairs:[] },
+];
+
+const SEASON_LABELS = {sp:'Sp',su:'Su',au:'Au',wi:'Wi'};
+const BOTTLE_ML    = 100;
+const ML_PER_SPRAY = 0.1;
+
+// ── Storage ──────────────────────────────────────────────────────────────────
+async function load(id) {
+  try {
+    const r = await window.storage.get('frag2:' + id);
+    return r ? JSON.parse(r.value) : null;
+  } catch { return null; }
+}
+
+async function save(id, data) {
+  try { await window.storage.set('frag2:' + id, JSON.stringify(data)); }
+  catch(e) { console.error('Storage error', e); }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function daysAgo(iso) {
+  if (!iso) return null;
+  const diff = Math.floor((Date.now() - new Date(iso)) / 86400000);
+  if (diff === 0) return 'today';
+  if (diff === 1) return 'yesterday';
+  return diff + ' days ago';
+}
+
+function fillColor(ml, bottleMl) {
+  bottleMl = bottleMl || BOTTLE_ML;
+  const p = ml / bottleMl;
+  if (p > 0.25) return 'var(--gold)';
+  if (p > 0.10) return 'var(--summer)';
+  return 'var(--autumn)';
+}
+
+function metaText(ml, bottleMl) {
+  bottleMl = bottleMl || BOTTLE_ML;
+  const m   = Math.max(0, ml).toFixed(1);
+  const pct = Math.max(0, Math.round((ml / bottleMl) * 100));
+  return m + 'ml · ' + pct + '%';
+}
+
+function updateBottleUI(id, ml, bottleMl) {
+  bottleMl = bottleMl || BOTTLE_ML;
+  const fill = document.getElementById('fill-' + id);
+  const meta = document.getElementById('meta-' + id);
+  if (!fill || !meta) return;
+  const pct = Math.max(0, Math.min(100, (ml / bottleMl) * 100));
+  fill.style.width      = pct + '%';
+  fill.style.background = fillColor(ml, bottleMl);
+  meta.textContent      = metaText(ml, bottleMl);
+}
+
+// ── Build card HTML ──────────────────────────────────────────────────────────
+function buildCard(frag, state) {
+  const bottleMl  = frag.bottleMl || BOTTLE_ML;
+  const ml        = state !== null && state.ml !== undefined ? state.ml : bottleMl;
+  const wornText  = state && state.lastWorn ? daysAgo(state.lastWorn) : 'never';
+  const wornCount = state ? (state.wornCount || 0) : 0;
+  const barPct    = Math.max(0, Math.min(100, (ml / bottleMl) * 100));
+  const color     = fillColor(ml, bottleMl);
+
+  let dotsHtml = '';
+  for (let i = 0; i < 4; i++) {
+    dotsHtml += i < frag.sprays
+      ? '<div class="spray-dot filled" style="background:var(' + frag.color + ')"></div>'
+      : '<div class="spray-dot"></div>';
+  }
+
+  const seasonHtml = frag.seasons.map(s => '<span class="s-badge ' + s + '">' + SEASON_LABELS[s] + '</span>').join('');
+  const pairHtml   = frag.pairs.map(p => '<span class="pair-mark" style="color:var(' + p.color + ')" title="' + p.title + '">✦</span>').join('');
+  const warnHtml   = frag.warning ? '<span class="warning">Handle with care</span>' : '';
+  const mlPerWear  = (frag.sprays * ML_PER_SPRAY).toFixed(1);
+
+  return `
+    <div class="frag-card" id="card-${frag.id}" style="animation-delay:${FRAGS.indexOf(frag)*0.03}s">
+      <div class="card-top">
+        <div class="card-num">${frag.id}</div>
+        <div class="card-name">${frag.name}${warnHtml}${pairHtml}</div>
+        <div class="seasons">${seasonHtml}</div>
+        <div class="spray-dots">${dotsHtml}</div>
+        <div class="spray-label" style="color:var(${frag.color})">${frag.sprays}</div>
+      </div>
+      <div class="card-body">
+        <div><div class="card-section-label">Placement</div><div class="card-section-value"><em>${frag.placement}</em></div></div>
+        <div><div class="card-section-label">Note</div><div class="card-section-value">${frag.note}</div></div>
+        <div style="grid-column:1/-1;margin-top:2px"><div class="card-section-label">Original House</div><div class="card-section-value" style="color:var(--cream-dim);opacity:.7">${frag.house}</div></div>
+      </div>
+      <div class="card-tracker">
+        <div class="tracker-left">
+          <div class="last-worn">Last worn: <span id="worn-${frag.id}">${wornText}</span></div>
+          <div class="wear-count" id="count-${frag.id}">${wornCount > 0 ? wornCount + '× worn' : ''}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div class="bottle-wrap">
+            <div class="bottle-label">Level</div>
+            <div class="bottle-track" id="track-${frag.id}" data-id="${frag.id}" title="Click to set level">
+              <div class="bottle-fill" id="fill-${frag.id}" style="width:${barPct}%;background:${color}"></div>
+            </div>
+            <div class="bottle-meta" id="meta-${frag.id}">${metaText(ml, bottleMl)}</div>
+          </div>
+          <div style="font-size:.48rem;color:var(--cream-dim);letter-spacing:.06em">${mlPerWear}ml/wear</div>
+          <button class="wore-btn" data-id="${frag.id}">Wore today</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+async function init() {
+  const list   = document.getElementById('fragList');
+  const states = await Promise.all(FRAGS.map(f => load(f.id)));
+  list.innerHTML = FRAGS.map((f, i) => buildCard(f, states[i])).join('');
+
+  // Wore today
+  list.addEventListener('click', async e => {
+    const btn = e.target.closest('.wore-btn');
+    if (!btn) return;
+    const id   = btn.dataset.id;
+    const frag = FRAGS.find(f => f.id === id);
+    let state  = await load(id) || { ml: BOTTLE_ML, wornCount: 0 };
+
+    state.lastWorn  = new Date().toISOString();
+    state.wornCount = (state.wornCount || 0) + 1;
+    const fBottleMl = frag.bottleMl || BOTTLE_ML;
+    state.ml        = Math.max(0, (state.ml !== undefined ? state.ml : fBottleMl) - (frag.sprays * ML_PER_SPRAY));
+
+    await save(id, state);
+
+    const wornEl  = document.getElementById('worn-'  + id);
+    const countEl = document.getElementById('count-' + id);
+    if (wornEl)  wornEl.textContent  = 'today';
+    if (countEl) countEl.textContent = state.wornCount + '× worn';
+    updateBottleUI(id, state.ml, fBottleMl);
+
+    btn.textContent = '✓ Logged';
+    setTimeout(() => btn.textContent = 'Wore today', 1800);
+  });
+
+  // Click bar to manually set level
+  list.addEventListener('click', async e => {
+    const track = e.target.closest('.bottle-track');
+    if (!track) return;
+    const id    = track.dataset.id;
+    const rect  = track.getBoundingClientRect();
+    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const cFrag  = FRAGS.find(f => f.id === id);
+    const cBottleMl = cFrag ? (cFrag.bottleMl || BOTTLE_ML) : BOTTLE_ML;
+    const newMl = parseFloat((ratio * cBottleMl).toFixed(1));
+
+    let state = await load(id) || { wornCount: 0, lastWorn: null };
+    state.ml  = newMl;
+    await save(id, state);
+    updateBottleUI(id, newMl, cBottleMl);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

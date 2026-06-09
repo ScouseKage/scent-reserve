@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What to Wear · Scent Reserve</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0b08;
+  --surface: #13110d;
+  --surface2: #1c1812;
+  --gold: #c9a84c;
+  --gold-dim: #7a6330;
+  --gold-pale: rgba(201,168,76,0.06);
+  --cream: #e8dfc8;
+  --cream-dim: #8a8070;
+  --rule: rgba(201,168,76,0.2);
+  --spring: #6aab7e;
+  --summer: #d4914a;
+  --autumn: #c45a2a;
+  --winter: #5a8ab0;
+  --danger-pale: rgba(139,32,32,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  padding: 48px 24px 80px;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.7;
+}
+
+.wrap { max-width: 700px; margin: 0 auto; position:relative; z-index:1; }
+
+header {
+  text-align: center;
+  margin-bottom: 52px;
+  animation: fadeDown 0.5s ease both;
+}
+
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.eyebrow {
+  font-size: 0.58rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 7vw, 3.8rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: var(--cream);
+}
+
+h1 em { font-style: italic; color: var(--gold); }
+
+.rule-gold {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  margin: 18px auto;
+}
+
+.subhead {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+/* Season blocks */
+.season-block {
+  margin-bottom: 52px;
+  animation: fadeUp 0.5s ease both;
+}
+
+.season-block:nth-child(1){ animation-delay:0.08s; }
+.season-block:nth-child(2){ animation-delay:0.16s; }
+.season-block:nth-child(3){ animation-delay:0.24s; }
+.season-block:nth-child(4){ animation-delay:0.32s; }
+
+.season-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+.season-banner.spring { background: rgba(106,171,126,0.08); border-left: 3px solid var(--spring); }
+.season-banner.summer { background: rgba(212,145,74,0.08);  border-left: 3px solid var(--summer); }
+.season-banner.autumn { background: rgba(196,90,42,0.08);   border-left: 3px solid var(--autumn); }
+.season-banner.winter { background: rgba(90,138,176,0.08);  border-left: 3px solid var(--winter); }
+
+.season-glyph { font-size: 1.5rem; line-height:1; flex-shrink:0; }
+
+.season-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  font-weight: 300;
+  line-height: 1;
+}
+.season-name.spring { color: var(--spring); }
+.season-name.summer { color: var(--summer); }
+.season-name.autumn { color: var(--autumn); }
+.season-name.winter { color: var(--winter); }
+
+.season-period {
+  font-size: 0.54rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-top: 3px;
+}
+
+/* Two-col layout inside each season */
+.season-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 520px) {
+  .season-body { grid-template-columns: 1fr; }
+}
+
+.col-label {
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Frag rows (solo column) */
+.frag-list { display:flex; flex-direction:column; gap:4px; }
+
+.frag-row {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 8px;
+  align-items: start;
+  padding: 8px 10px;
+  border-radius: 2px;
+  border-left: 2px solid transparent;
+  transition: background 0.15s;
+}
+.frag-row:hover { background: var(--gold-pale); }
+.frag-row.core { border-left-color: var(--gold); background: rgba(201,168,76,0.04); }
+.frag-row.occasional { border-left-color: rgba(138,128,112,0.4); }
+.frag-row.avoid { border-left-color: #8b2020; background: var(--danger-pale); }
+
+.frag-num { font-size: 0.58rem; color: var(--gold); letter-spacing:0.08em; padding-top:1px; }
+.frag-row.avoid .frag-num { color: #c07070; }
+
+.frag-info {}
+.frag-name { font-family: 'Cormorant Garamond', serif; font-size: 0.96rem; }
+.frag-row.avoid .frag-name { color: #c07070; }
+.frag-note { font-size: 0.52rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream-dim); margin-top:1px; }
+.frag-row.avoid .frag-note { color: #8b4040; }
+
+/* Pairing column */
+.pairing-stack { display:flex; flex-direction:column; gap:8px; }
+
+.pair-card {
+  background: var(--surface);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: 2px;
+  padding: 12px 14px;
+  transition: border-color 0.15s;
+}
+.pair-card:hover { border-color: var(--gold-dim); }
+
+.pair-nums {
+  font-size: 0.58rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  margin-bottom: 3px;
+}
+
+.pair-names {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.88rem;
+  color: var(--cream);
+  margin-bottom: 5px;
+  line-height: 1.3;
+}
+
+.pair-effect {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+
+.pair-technique {
+  font-size: 0.52rem;
+  letter-spacing: 0.08em;
+  color: var(--cream-dim);
+  line-height: 1.55;
+  border-top: 1px solid rgba(201,168,76,0.08);
+  padding-top: 6px;
+}
+
+.season-divider {
+  border: none;
+  border-top: 1px solid rgba(201,168,76,0.07);
+  margin: 44px 0 52px;
+}
+
+/* Quick decision */
+.quick {
+  background: var(--surface2);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 22px 26px;
+  animation: fadeUp 0.5s ease 0.4s both;
+}
+
+.quick .col-label { margin-bottom: 16px; }
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 24px;
+}
+
+@media (max-width: 460px) {
+  .quick-grid { grid-template-columns: 1fr; }
+}
+
+.quick-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.06);
+}
+.quick-row:last-child { border-bottom: none; }
+
+.quick-occasion {
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.quick-pick {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+}
+
+footer {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.54rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  opacity: 0.35;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Scent Reserve · Personal Collection</div>
+    <h1>What to <em>Wear</em> &amp; How</h1>
+    <div class="rule-gold"></div>
+    <div class="subhead">Seasonal picks · Layering combinations · Quick reference</div>
+  </header>
+
+  <!-- SPRING -->
+  <div class="season-block">
+    <div class="season-banner spring">
+      <div class="season-glyph">🌿</div>
+      <div>
+        <div class="season-name spring">Spring</div>
+        <div class="season-period">March – May · Cool to Mild · Variable Rain</div>
+      </div>
+    </div>
+    <div class="season-body">
+      <div>
+        <div class="col-label">Solo Picks</div>
+        <div class="frag-list">
+          <div class="frag-row core"><div class="frag-num">318</div><div class="frag-info"><div class="frag-name">Green Irish Tweed</div><div class="frag-note">All day</div></div></div>
+          <div class="frag-row core"><div class="frag-num">157</div><div class="frag-info"><div class="frag-name">Terre d'Hermès</div><div class="frag-note">Cool days</div></div></div>
+          <div class="frag-row core"><div class="frag-num">120</div><div class="frag-info"><div class="frag-name">Eros</div><div class="frag-note">Versatile</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">162</div><div class="frag-info"><div class="frag-name">Bleecker Street</div><div class="frag-note">Warmer days</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">149</div><div class="frag-info"><div class="frag-name">Baccarat Rouge 540</div><div class="frag-note">Cool evenings</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Pairings to Try</div>
+        <div class="pairing-stack">
+          <div class="pair-card">
+            <div class="pair-nums">318 + 157</div>
+            <div class="pair-names">Green Irish Tweed + Terre d'Hermès</div>
+            <div class="pair-effect">Earthy fern with mineral depth</div>
+            <div class="pair-technique">Apply 157 first · GIT on pulse points after 2 mins</div>
+          </div>
+          <div class="pair-card">
+            <div class="pair-nums">120 + 149</div>
+            <div class="pair-names">Eros + Baccarat Rouge 540</div>
+            <div class="pair-effect">Fresh-sweet with magnetic sillage</div>
+            <div class="pair-technique">BR540 on chest · Eros on neck and wrists · Evenings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- SUMMER -->
+  <div class="season-block">
+    <div class="season-banner summer">
+      <div class="season-glyph">☀️</div>
+      <div>
+        <div class="season-name summer">Summer</div>
+        <div class="season-period">June – August · Warm to Hot · Humid</div>
+      </div>
+    </div>
+    <div class="season-body">
+      <div>
+        <div class="col-label">Solo Picks</div>
+        <div class="frag-list">
+          <div class="frag-row core"><div class="frag-num">346</div><div class="frag-info"><div class="frag-name">Lime Basil &amp; Mandarin</div><div class="frag-note">Day wear</div></div></div>
+          <div class="frag-row core"><div class="frag-num">318</div><div class="frag-info"><div class="frag-name">Green Irish Tweed</div><div class="frag-note">All day</div></div></div>
+          <div class="frag-row core"><div class="frag-num">162</div><div class="frag-info"><div class="frag-name">Bleecker Street</div><div class="frag-note">Light casual</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">149</div><div class="frag-info"><div class="frag-name">Baccarat Rouge 540</div><div class="frag-note">Projects in heat</div></div></div>
+          <div class="frag-row avoid"><div class="frag-num">175</div><div class="frag-info"><div class="frag-name">Ombre Nomade</div><div class="frag-note">Avoid — too heavy</div></div></div>
+          <div class="frag-row avoid"><div class="frag-num">223</div><div class="frag-info"><div class="frag-name">Tobacco Vanille</div><div class="frag-note">Avoid — overpowering</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Pairings to Try</div>
+        <div class="pairing-stack">
+          <div class="pair-card">
+            <div class="pair-nums">149 + 346</div>
+            <div class="pair-names">Baccarat Rouge 540 + Lime Basil &amp; Mandarin</div>
+            <div class="pair-effect">Airy citrus with a sweet saffron glow</div>
+            <div class="pair-technique">346 first · BR540 very lightly on top · one spray each</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- AUTUMN -->
+  <div class="season-block">
+    <div class="season-banner autumn">
+      <div class="season-glyph">🍂</div>
+      <div>
+        <div class="season-name autumn">Autumn</div>
+        <div class="season-period">September – November · Cooling · Damp</div>
+      </div>
+    </div>
+    <div class="season-body">
+      <div>
+        <div class="col-label">Solo Picks</div>
+        <div class="frag-list">
+          <div class="frag-row core"><div class="frag-num">300</div><div class="frag-info"><div class="frag-name">Angels' Share</div><div class="frag-note">All day</div></div></div>
+          <div class="frag-row core"><div class="frag-num">223</div><div class="frag-info"><div class="frag-name">Tobacco Vanille</div><div class="frag-note">Day–Evening</div></div></div>
+          <div class="frag-row core"><div class="frag-num">108</div><div class="frag-info"><div class="frag-name">Halfeti</div><div class="frag-note">Evenings</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">412</div><div class="frag-info"><div class="frag-name">Tuscan Leather</div><div class="frag-note">Statement eve</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">494</div><div class="frag-info"><div class="frag-name">Lost Cherry</div><div class="frag-note">Date night</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Pairings to Try</div>
+        <div class="pairing-stack">
+          <div class="pair-card">
+            <div class="pair-nums">223 + 300</div>
+            <div class="pair-names">Tobacco Vanille + Angels' Share</div>
+            <div class="pair-effect">A fireplace in a bottle</div>
+            <div class="pair-technique">Equal application · chest and wrists · let blend on skin</div>
+          </div>
+          <div class="pair-card">
+            <div class="pair-nums">494 + 219</div>
+            <div class="pair-names">Lost Cherry + Bitter Peach</div>
+            <div class="pair-effect">Dark fruit cocktail — seductive</div>
+            <div class="pair-technique">494 first as base · 219 lightly on wrists · date night</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- WINTER -->
+  <div class="season-block">
+    <div class="season-banner winter">
+      <div class="season-glyph">❄️</div>
+      <div>
+        <div class="season-name winter">Winter</div>
+        <div class="season-period">December – February · Cold · Dry Indoors</div>
+      </div>
+    </div>
+    <div class="season-body">
+      <div>
+        <div class="col-label">Solo Picks</div>
+        <div class="frag-list">
+          <div class="frag-row core"><div class="frag-num">175</div><div class="frag-info"><div class="frag-name">Ombre Nomade</div><div class="frag-note">Evenings</div></div></div>
+          <div class="frag-row core"><div class="frag-num">170</div><div class="frag-info"><div class="frag-name">Oud Saffron</div><div class="frag-note">All day</div></div></div>
+          <div class="frag-row core"><div class="frag-num">514</div><div class="frag-info"><div class="frag-name">Black Orchid</div><div class="frag-note">Statement</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">223</div><div class="frag-info"><div class="frag-name">Tobacco Vanille</div><div class="frag-note">Daytime warmth</div></div></div>
+          <div class="frag-row occasional"><div class="frag-num">300</div><div class="frag-info"><div class="frag-name">Angels' Share</div><div class="frag-note">Cosy evenings</div></div></div>
+        </div>
+      </div>
+      <div>
+        <div class="col-label">Pairings to Try</div>
+        <div class="pairing-stack">
+          <div class="pair-card">
+            <div class="pair-nums">223 + 300</div>
+            <div class="pair-names">Tobacco Vanille + Angels' Share</div>
+            <div class="pair-effect">A fireplace in a bottle</div>
+            <div class="pair-technique">Equal application · reliable cold-weather default</div>
+          </div>
+          <div class="pair-card">
+            <div class="pair-nums">170 + 412</div>
+            <div class="pair-names">Oud Saffron + Tuscan Leather</div>
+            <div class="pair-effect">Spiced leather oud — commanding</div>
+            <div class="pair-technique">412 first · 170 very lightly on top · one spray each · special occasions only</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- QUICK DECISION -->
+  <div class="quick">
+    <div class="col-label">Quick Decision Guide</div>
+    <div class="quick-grid">
+      <div class="quick-row"><span class="quick-occasion">Cold day, no plans</span><span class="quick-pick">223 — Tobacco Vanille</span></div>
+      <div class="quick-row"><span class="quick-occasion">Warm day, casual</span><span class="quick-pick">346 — Lime Basil &amp; Mandarin</span></div>
+      <div class="quick-row"><span class="quick-occasion">Any season, any occasion</span><span class="quick-pick">318 — Green Irish Tweed</span></div>
+      <div class="quick-row"><span class="quick-occasion">Want compliments</span><span class="quick-pick">149 — Baccarat Rouge 540</span></div>
+      <div class="quick-row"><span class="quick-occasion">Evening out</span><span class="quick-pick">300 or 494</span></div>
+      <div class="quick-row"><span class="quick-occasion">Date night</span><span class="quick-pick">494 + 219 layered</span></div>
+      <div class="quick-row"><span class="quick-occasion">Winter statement</span><span class="quick-pick">175 — Ombre Nomade</span></div>
+      <div class="quick-row"><span class="quick-occasion">Feeling bold</span><span class="quick-pick">514 — Black Orchid</span></div>
+    </div>
+  </div>
+
+  <footer>Scent Reserve · What to Wear &amp; How · Personal Collection</footer>
+
+</div>
+</body>
+</html>

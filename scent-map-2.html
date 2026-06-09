@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scent Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0b08;
+    --paper: #13110d;
+    --gold: #c9a84c;
+    --gold-dim: #7a6330;
+    --cream: #e8dfc8;
+    --cream-dim: #8a8070;
+    --smoke: #2a2520;
+    --fresh: #7abfb0;
+    --warm: #c47a3a;
+    --light: #d4c9a8;
+    --dark: #4a1a3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Courier Prime', monospace;
+    color: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 48px;
+    overflow-x: hidden;
+  }
+
+  /* Subtle grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  header p {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--cream-dim);
+    text-transform: uppercase;
+  }
+
+  .divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    margin: 14px auto;
+  }
+
+  /* Map container */
+  .map-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    z-index: 1;
+  }
+
+  .axis-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .axis-label.fresh { color: var(--fresh); }
+  .axis-label.warm  { color: var(--warm);  }
+
+  .map-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .axis-side {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    width: 18px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .axis-side.light-label {
+    color: var(--light);
+    transform: rotate(180deg);
+  }
+
+  .axis-side.dark-label {
+    color: var(--dark);
+    filter: brightness(2.5);
+    transform: rotate(180deg);
+  }
+
+  .map-canvas {
+    position: relative;
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    background: var(--paper);
+    border: 1px solid var(--gold-dim);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  /* Quadrant backgrounds */
+  .quad {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    opacity: 0.07;
+  }
+  .quad.tl { top:0; left:0;  background: radial-gradient(circle at 80% 80%, #7abfb0, transparent 70%); } /* fresh-light */
+  .quad.tr { top:0; right:0; background: radial-gradient(circle at 20% 80%, #c9a84c, transparent 70%); } /* warm-light */
+  .quad.bl { bottom:0; left:0;  background: radial-gradient(circle at 80% 20%, #2a6b60, transparent 70%); } /* fresh-dark */
+  .quad.br { bottom:0; right:0; background: radial-gradient(circle at 20% 20%, #7a2040, transparent 70%); } /* warm-dark */
+
+  /* Grid lines */
+  .grid-h, .grid-v {
+    position: absolute;
+    background: var(--gold-dim);
+    opacity: 0.2;
+  }
+  .grid-h { left:0; right:0; top:50%; height:1px; }
+  .grid-v { top:0; bottom:0; left:50%; width:1px; }
+
+  /* Axis ticks */
+  .tick {
+    position: absolute;
+    background: var(--gold-dim);
+    opacity: 0.25;
+  }
+  .tick.h { height: 6px; width: 1px; top: calc(50% - 3px); }
+  .tick.v { width: 6px; height: 1px; left: calc(50% - 3px); }
+
+  /* Quadrant labels */
+  .qlabel {
+    position: absolute;
+    font-size: 0.5rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.28;
+    pointer-events: none;
+  }
+  .qlabel.tl { top: 10px; left: 12px; color: var(--fresh); }
+  .qlabel.tr { top: 10px; right: 12px; color: var(--warm); text-align: right; }
+  .qlabel.bl { bottom: 10px; left: 12px; color: var(--fresh); opacity: 0.18; }
+  .qlabel.br { bottom: 10px; right: 12px; color: var(--warm); text-align: right; opacity: 0.18; }
+
+  /* Scent dots */
+  .dot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    z-index: 10;
+    transition: z-index 0s;
+  }
+
+  .dot-inner {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    background: var(--gold-dim);
+    transition: transform 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+    position: relative;
+  }
+
+  .dot:hover .dot-inner,
+  .dot.active .dot-inner {
+    transform: scale(1.8);
+    background: var(--gold);
+    box-shadow: 0 0 12px rgba(201, 168, 76, 0.6);
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: absolute;
+    background: #1c1812;
+    border: 1px solid var(--gold-dim);
+    padding: 10px 14px;
+    border-radius: 2px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    z-index: 100;
+    min-width: 170px;
+    max-width: 210px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  }
+
+  .tooltip.visible { opacity: 1; }
+
+  .tooltip-num {
+    font-size: 0.6rem;
+    color: var(--gold);
+    letter-spacing: 0.2em;
+    margin-bottom: 2px;
+  }
+
+  .tooltip-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    color: var(--cream);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .tooltip-inspo {
+    font-size: 0.62rem;
+    color: var(--cream-dim);
+    margin-bottom: 6px;
+    font-style: italic;
+  }
+
+  .tooltip-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tag {
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+    padding: 2px 6px;
+    border-radius: 1px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+
+  .tag.fresh  { color: var(--fresh); border-color: var(--fresh); opacity: 0.8; }
+  .tag.warm   { color: var(--warm);  border-color: var(--warm);  opacity: 0.8; }
+  .tag.light  { color: var(--light); border-color: var(--light); opacity: 0.7; }
+  .tag.dark   { color: #c07090;      border-color: #c07090;      opacity: 0.8; }
+  .tag.oud    { color: #b08060;      border-color: #b08060;      opacity: 0.8; }
+  .tag.gourmand { color: #e0a0a0;    border-color: #e0a0a0;      opacity: 0.8; }
+  .tag.leather  { color: #a08878;    border-color: #a08878;      opacity: 0.8; }
+  .tag.oriental { color: #c0a000;    border-color: #c0a000;      opacity: 0.8; }
+
+  /* Legend */
+  .legend {
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    width: 100%;
+    max-width: 700px;
+    z-index: 1;
+    position: relative;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .legend-item:hover,
+  .legend-item.active {
+    border-color: var(--gold-dim);
+    background: rgba(201, 168, 76, 0.05);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gold);
+    background: var(--gold-dim);
+    flex-shrink: 0;
+    transition: background 0.15s, box-shadow 0.15s;
+  }
+
+  .legend-item.active .legend-dot,
+  .legend-item:hover .legend-dot {
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(201, 168, 76, 0.5);
+  }
+
+  .legend-num {
+    font-size: 0.58rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    width: 26px;
+    flex-shrink: 0;
+  }
+
+  .legend-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    color: var(--cream-dim);
+    line-height: 1.2;
+  }
+
+  .legend-item:hover .legend-text,
+  .legend-item.active .legend-text {
+    color: var(--cream);
+  }
+
+  footer {
+    margin-top: 36px;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--cream-dim);
+    opacity: 0.4;
+    text-align: center;
+    z-index: 1;
+    position: relative;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p>Personal Collection</p>
+  <div class="divider"></div>
+  <h1>Scent Map</h1>
+  <div class="divider"></div>
+  <p>Hover or tap a point to explore</p>
+</header>
+
+<div class="map-wrapper">
+  <div class="axis-label fresh">← Fresh / Aromatic</div>
+  <div class="axis-label" style="color:var(--cream-dim); margin-top:2px; margin-bottom:6px;">Character</div>
+  <div class="axis-label warm" style="margin-bottom:14px;">Warm / Gourmand / Oriental →</div>
+
+  <div class="map-row">
+    <div class="axis-side light-label">Light / Airy</div>
+
+    <div class="map-canvas" id="mapCanvas">
+      <!-- Quadrant backgrounds -->
+      <div class="quad tl"></div>
+      <div class="quad tr"></div>
+      <div class="quad bl"></div>
+      <div class="quad br"></div>
+
+      <!-- Grid -->
+      <div class="grid-h"></div>
+      <div class="grid-v"></div>
+
+      <!-- Quadrant labels -->
+      <div class="qlabel tl">Fresh &amp; Light</div>
+      <div class="qlabel tr">Warm &amp; Light</div>
+      <div class="qlabel bl">Fresh &amp; Dark</div>
+      <div class="qlabel br">Warm &amp; Dark</div>
+
+      <!-- Tooltip -->
+      <div class="tooltip" id="tooltip">
+        <div class="tooltip-num" id="tt-num"></div>
+        <div class="tooltip-name" id="tt-name"></div>
+        <div class="tooltip-inspo" id="tt-inspo"></div>
+        <div class="tooltip-tags" id="tt-tags"></div>
+      </div>
+    </div>
+
+    <div class="axis-side dark-label">Rich / Dark</div>
+  </div>
+
+  <div style="text-align:center; margin-top:12px;">
+    <span class="axis-label" style="color:var(--cream-dim);">Intensity / Depth</span>
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend" id="legend"></div>
+
+<footer>Tap any dot or legend item to highlight · Scent Reserve Collection</footer>
+
+<script>
+  // x = warm axis: 0 = very fresh/aromatic, 1 = very warm/oriental/gourmand
+  // y = depth axis: 0 = very light/airy, 1 = very rich/dark
+  const fragrances = [
+    { num: '318', name: 'Green Irish Tweed', inspo: 'Creed',              x: 0.10, y: 0.12, tags: ['fresh','light'] },
+    { num: '346', name: 'Lime Basil & Mandarin', inspo: 'Jo Malone',     x: 0.15, y: 0.18, tags: ['fresh','light'] },
+    { num: '162', name: 'Bleecker Street', inspo: 'Maison Margiela',     x: 0.22, y: 0.22, tags: ['fresh','light'] },
+    { num: '120', name: 'Eros', inspo: 'Versace',                        x: 0.32, y: 0.35, tags: ['fresh','warm'] },
+    { num: '157', name: 'Terre d\'Hermès', inspo: 'Hermès',              x: 0.28, y: 0.45, tags: ['fresh','dark'] },
+    { num: '149', name: 'Baccarat Rouge 540', inspo: 'Maison Francis Kurkdjian', x: 0.58, y: 0.30, tags: ['warm','light','oriental'] },
+    { num: '219', name: 'Bitter Peach', inspo: 'Tom Ford',               x: 0.60, y: 0.42, tags: ['warm','gourmand'] },
+    { num: '108', name: 'Halfeti', inspo: 'Penhaligon\'s',               x: 0.55, y: 0.68, tags: ['dark','oud','oriental'] },
+    { num: '494', name: 'Lost Cherry', inspo: 'Tom Ford',                x: 0.68, y: 0.55, tags: ['warm','dark','gourmand'] },
+    { num: '223', name: 'Tobacco Vanille', inspo: 'Tom Ford',            x: 0.72, y: 0.58, tags: ['warm','dark','gourmand'] },
+    { num: '300', name: "Angels' Share", inspo: 'Kilian',                x: 0.70, y: 0.50, tags: ['warm','gourmand'] },
+    { num: '412', name: 'Tuscan Leather', inspo: 'Tom Ford',             x: 0.60, y: 0.75, tags: ['dark','leather'] },
+    { num: '170', name: 'Oud Saffron', inspo: 'Tom Ford',               x: 0.72, y: 0.78, tags: ['dark','oud','oriental'] },
+    { num: '514', name: 'Black Orchid', inspo: 'Tom Ford',               x: 0.65, y: 0.82, tags: ['dark','oriental'] },
+    { num: '175', name: 'Ombre Nomade', inspo: 'Louis Vuitton',         x: 0.62, y: 0.90, tags: ['dark','oud'] },
+  ];
+
+  const canvas = document.getElementById('mapCanvas');
+  const tooltip = document.getElementById('tooltip');
+  const legend = document.getElementById('legend');
+
+  let activeIndex = null;
+
+  function positionTooltip(dot, fragData) {
+    const canvasRect = canvas.getBoundingClientRect();
+    const dotRect = dot.getBoundingClientRect();
+
+    const dotCenterX = dotRect.left - canvasRect.left + dotRect.width / 2;
+    const dotCenterY = dotRect.top - canvasRect.top + dotRect.height / 2;
+
+    tooltip.style.left = '';
+    tooltip.style.right = '';
+    tooltip.style.top = '';
+    tooltip.style.bottom = '';
+
+    const ttW = 200;
+    const ttH = 110;
+    const pad = 16;
+
+    let left = dotCenterX + 14;
+    let top = dotCenterY - 20;
+
+    if (left + ttW > canvasRect.width - pad) left = dotCenterX - ttW - 14;
+    if (top + ttH > canvasRect.height - pad) top = canvasRect.height - ttH - pad;
+    if (top < pad) top = pad;
+
+    tooltip.style.left = left + 'px';
+    tooltip.style.top = top + 'px';
+  }
+
+  function showTooltip(frag, dot) {
+    document.getElementById('tt-num').textContent = '#' + frag.num;
+    document.getElementById('tt-name').textContent = frag.name;
+    document.getElementById('tt-inspo').textContent = 'Inspired by · ' + frag.inspo;
+
+    const tagsEl = document.getElementById('tt-tags');
+    tagsEl.innerHTML = '';
+    frag.tags.forEach(t => {
+      const span = document.createElement('span');
+      span.className = 'tag ' + t;
+      span.textContent = t;
+      tagsEl.appendChild(span);
+    });
+
+    positionTooltip(dot, frag);
+    tooltip.classList.add('visible');
+  }
+
+  function hideTooltip() {
+    tooltip.classList.remove('visible');
+  }
+
+  function setActive(idx) {
+    // Clear all
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+    document.querySelectorAll('.legend-item').forEach((l, i) => l.classList.toggle('active', i === idx));
+
+    if (idx !== null && idx !== activeIndex) {
+      activeIndex = idx;
+      showTooltip(fragrances[idx], document.querySelectorAll('.dot')[idx]);
+    } else {
+      activeIndex = null;
+      hideTooltip();
+    }
+  }
+
+  // Build dots
+  fragrances.forEach((frag, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.style.left = (frag.x * 100) + '%';
+    dot.style.top = (frag.y * 100) + '%';
+
+    const inner = document.createElement('div');
+    inner.className = 'dot-inner';
+    dot.appendChild(inner);
+
+    dot.addEventListener('mouseenter', () => {
+      if (activeIndex === null) {
+        showTooltip(frag, dot);
+      }
+    });
+    dot.addEventListener('mouseleave', () => {
+      if (activeIndex === null) hideTooltip();
+    });
+    dot.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setActive(activeIndex === i ? null : i);
+    });
+
+    canvas.appendChild(dot);
+
+    // Legend item
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+
+    const ldot = document.createElement('div');
+    ldot.className = 'legend-dot';
+
+    const lnum = document.createElement('div');
+    lnum.className = 'legend-num';
+    lnum.textContent = frag.num;
+
+    const ltxt = document.createElement('div');
+    ltxt.className = 'legend-text';
+    ltxt.textContent = frag.name;
+
+    item.appendChild(ldot);
+    item.appendChild(lnum);
+    item.appendChild(ltxt);
+
+    item.addEventListener('click', () => {
+      setActive(activeIndex === i ? null : i);
+    });
+
+    legend.appendChild(item);
+  });
+
+  canvas.addEventListener('click', () => {
+    activeIndex = null;
+    document.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
+    document.querySelectorAll('.legend-item').forEach(l => l.classList.remove('active'));
+    hideTooltip();
+  });
+</script>
+</body>
+</html>

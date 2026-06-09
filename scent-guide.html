@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scent Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f0e8;
+  --bg2: #ede7d9;
+  --ink: #1a1410;
+  --ink-dim: #6b5f50;
+  --gold: #8b6914;
+  --gold-light: #c4a44a;
+  --rule: #d4c9b0;
+  --spring: #4a7c59;
+  --summer: #c47a20;
+  --autumn: #8b3a1a;
+  --winter: #2a4a6b;
+  --accent-spring: #e8f4ec;
+  --accent-summer: #fdf0e0;
+  --accent-autumn: #fae8e0;
+  --accent-winter: #e0e8f4;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'DM Mono', monospace;
+  color: var(--ink);
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Paper texture lines */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    rgba(180,160,120,0.12) 27px,
+    rgba(180,160,120,0.12) 28px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Red margin line */
+body::after {
+  content: '';
+  position: fixed;
+  left: 72px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(180, 80, 60, 0.2);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 48px 32px 64px 88px;
+  position: relative;
+  z-index: 1;
+}
+
+header {
+  margin-bottom: 40px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 20px;
+}
+
+.header-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 6vw, 3.8rem);
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+h1 em {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.header-sub {
+  margin-top: 10px;
+  font-size: 0.62rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.2em;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 20px 10px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  cursor: pointer;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover { color: var(--ink); }
+.tab-btn.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ===================== SEASONAL ===================== */
+.season-block {
+  margin-bottom: 40px;
+}
+
+.season-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.season-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.season-icon.spring { background: var(--accent-spring); }
+.season-icon.summer { background: var(--accent-summer); }
+.season-icon.autumn { background: var(--accent-autumn); }
+.season-icon.winter { background: var(--accent-winter); }
+
+.season-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.season-title.spring { color: var(--spring); }
+.season-title.summer { color: var(--summer); }
+.season-title.autumn { color: var(--autumn); }
+.season-title.winter { color: var(--winter); }
+
+.season-subtitle {
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+.scent-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.scent-row {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--rule);
+  transition: border-color 0.15s, background 0.15s;
+  border-radius: 0 2px 2px 0;
+}
+
+.scent-row:hover {
+  background: rgba(139,105,20,0.04);
+}
+
+.scent-row.primary { border-left-color: var(--gold-light); }
+.scent-row.secondary { border-left-color: var(--rule); }
+
+.scent-num {
+  font-size: 0.6rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.scent-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.scent-note {
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-align: right;
+}
+
+.badge {
+  font-size: 0.48rem;
+  letter-spacing: 0.15em;
+  padding: 2px 7px;
+  border-radius: 1px;
+  text-transform: uppercase;
+  font-weight: 500;
+  display: inline-block;
+  margin-left: 6px;
+}
+
+.badge.core { background: var(--gold); color: white; }
+.badge.occasional { background: var(--bg2); color: var(--ink-dim); border: 1px solid var(--rule); }
+.badge.avoid { background: #fce8e8; color: #8b2020; border: 1px solid #f0c0c0; }
+
+.season-rule {
+  margin: 32px 0;
+  border: none;
+  border-top: 1px solid var(--rule);
+}
+
+/* ===================== VERSATILITY ===================== */
+.rank-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rank-item {
+  display: grid;
+  grid-template-columns: 28px 40px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 10px;
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  transition: border-color 0.15s, transform 0.1s;
+  animation: fadeUp 0.4s ease both;
+}
+
+.rank-item:hover {
+  border-color: var(--gold-light);
+  transform: translateX(3px);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rank-pos {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: var(--ink-dim);
+  text-align: center;
+}
+
+.rank-num {
+  font-size: 0.58rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.rank-info {}
+.rank-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+}
+.rank-why {
+  font-size: 0.56rem;
+  color: var(--ink-dim);
+  margin-top: 2px;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+}
+
+.versatility-bar-wrap {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.versatility-bar {
+  height: 4px;
+  background: var(--rule);
+  border-radius: 2px;
+  width: 80px;
+  overflow: hidden;
+}
+
+.versatility-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transition: width 0.6s ease;
+}
+
+.versatility-score {
+  font-size: 0.52rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.1em;
+}
+
+/* ===================== PAIRING ===================== */
+.pairing-intro {
+  font-size: 0.72rem;
+  color: var(--ink-dim);
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 520px;
+}
+
+.pairing-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.pairing-card {
+  background: white;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 16px 18px;
+  transition: border-color 0.15s;
+}
+
+.pairing-card:hover { border-color: var(--gold-light); }
+
+.pairing-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.pairing-frag {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.pairing-num {
+  font-size: 0.56rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.pairing-plus {
+  font-size: 0.8rem;
+  color: var(--rule);
+  font-weight: 300;
+}
+
+.pairing-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.pairing-arrow {
+  font-size: 0.6rem;
+  color: var(--ink-dim);
+  letter-spacing: 0.15em;
+}
+
+.pairing-effect {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.pairing-desc {
+  font-size: 0.6rem;
+  color: var(--ink-dim);
+  line-height: 1.65;
+  letter-spacing: 0.03em;
+}
+
+.pairing-technique {
+  margin-top: 8px;
+  font-size: 0.56rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  border-top: 1px solid var(--rule);
+  padding-top: 8px;
+}
+
+.pairing-technique span {
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.section-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rule);
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-label">Personal Collection · Scent Reserve</div>
+    <h1>The <em>Fragrance</em> Guide</h1>
+    <div class="header-sub">Seasonal Rotation · Versatility Ranking · Pairing Notes</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('seasonal', this)">Seasonal Rotation</button>
+    <button class="tab-btn" onclick="switchTab('versatility', this)">Versatility Ranking</button>
+    <button class="tab-btn" onclick="switchTab('pairing', this)">Pairing Guide</button>
+  </div>
+
+  <!-- ========== SEASONAL ========== -->
+  <div class="tab-panel active" id="tab-seasonal">
+
+    <div class="season-block">
+      <div class="season-header">
+        <div class="season-icon spring">🌿</div>
+        <div>
+          <div class="season-title spring">Spring</div>
+          <div class="season-subtitle">March – May · Cool to Mild · Variable Rain</div>
+        </div>
+      </div>
+      <div class="scent-rows">
+        <div class="scent-row primary">
+          <div class="scent-num">318</div>
+          <div class="scent-name">Green Irish Tweed <span class="badge core">Core</span></div>
+          <div class="scent-note">Fresh fern · All day</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">157</div>
+          <div class="scent-name">Terre d'Hermès <span class="badge core">Core</span></div>
+          <div class="scent-note">Earthy · Cool days</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">120</div>
+          <div class="scent-name">Eros <span class="badge core">Core</span></div>
+          <div class="scent-note">Fresh-warm · Versatile</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">162</div>
+          <div class="scent-name">Bleecker Street <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Casual · Warmer days</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">149</div>
+          <div class="scent-name">Baccarat Rouge 540 <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Cool evenings</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">219</div>
+          <div class="scent-name">Bitter Peach <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Evening only</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="season-rule">
+
+    <div class="season-block">
+      <div class="season-header">
+        <div class="season-icon summer">☀️</div>
+        <div>
+          <div class="season-title summer">Summer</div>
+          <div class="season-subtitle">June – August · Warm to Hot · Humid</div>
+        </div>
+      </div>
+      <div class="scent-rows">
+        <div class="scent-row primary">
+          <div class="scent-num">346</div>
+          <div class="scent-name">Lime Basil & Mandarin <span class="badge core">Core</span></div>
+          <div class="scent-note">Crisp · Day wear</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">318</div>
+          <div class="scent-name">Green Irish Tweed <span class="badge core">Core</span></div>
+          <div class="scent-note">Classic · All day</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">162</div>
+          <div class="scent-name">Bleecker Street <span class="badge core">Core</span></div>
+          <div class="scent-note">Light · Casual</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">149</div>
+          <div class="scent-name">Baccarat Rouge 540 <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Projects well in heat</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">120</div>
+          <div class="scent-name">Eros <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Morning only in heat</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">175</div>
+          <div class="scent-name">Ombre Nomade <span class="badge avoid">Avoid</span></div>
+          <div class="scent-note">Too heavy</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">223</div>
+          <div class="scent-name">Tobacco Vanille <span class="badge avoid">Avoid</span></div>
+          <div class="scent-note">Overpowering in heat</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="season-rule">
+
+    <div class="season-block">
+      <div class="season-header">
+        <div class="season-icon autumn">🍂</div>
+        <div>
+          <div class="season-title autumn">Autumn</div>
+          <div class="season-subtitle">September – November · Cooling · Damp</div>
+        </div>
+      </div>
+      <div class="scent-rows">
+        <div class="scent-row primary">
+          <div class="scent-num">300</div>
+          <div class="scent-name">Angels' Share <span class="badge core">Core</span></div>
+          <div class="scent-note">Boozy-warm · All day</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">223</div>
+          <div class="scent-name">Tobacco Vanille <span class="badge core">Core</span></div>
+          <div class="scent-note">Comforting · Day-eve</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">108</div>
+          <div class="scent-name">Halfeti <span class="badge core">Core</span></div>
+          <div class="scent-note">Complex · Evening</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">412</div>
+          <div class="scent-name">Tuscan Leather <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Evening / statement</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">494</div>
+          <div class="scent-name">Lost Cherry <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Evening / date</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">157</div>
+          <div class="scent-name">Terre d'Hermès <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Cool crisp days</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="season-rule">
+
+    <div class="season-block">
+      <div class="season-header">
+        <div class="season-icon winter">❄️</div>
+        <div>
+          <div class="season-title winter">Winter</div>
+          <div class="season-subtitle">December – February · Cold · Dry indoors</div>
+        </div>
+      </div>
+      <div class="scent-rows">
+        <div class="scent-row primary">
+          <div class="scent-num">175</div>
+          <div class="scent-name">Ombre Nomade <span class="badge core">Core</span></div>
+          <div class="scent-note">Heavy oud · Evenings</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">170</div>
+          <div class="scent-name">Oud Saffron <span class="badge core">Core</span></div>
+          <div class="scent-note">Spiced oud · All day</div>
+        </div>
+        <div class="scent-row primary">
+          <div class="scent-num">514</div>
+          <div class="scent-name">Black Orchid <span class="badge core">Core</span></div>
+          <div class="scent-note">Dark · Statement</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">223</div>
+          <div class="scent-name">Tobacco Vanille <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Daytime warmth</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">412</div>
+          <div class="scent-name">Tuscan Leather <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Cold days</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">300</div>
+          <div class="scent-name">Angels' Share <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Cosy evenings</div>
+        </div>
+        <div class="scent-row secondary">
+          <div class="scent-num">149</div>
+          <div class="scent-name">Baccarat Rouge 540 <span class="badge occasional">Occasional</span></div>
+          <div class="scent-note">Works year-round</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ========== VERSATILITY ========== -->
+  <div class="tab-panel" id="tab-versatility">
+    <div class="section-label">Ranked 1–15 · Most to Least Versatile</div>
+    <div class="rank-list">
+
+      <div class="rank-item" style="animation-delay:0.00s">
+        <div class="rank-pos">1</div>
+        <div class="rank-num">318</div>
+        <div class="rank-info">
+          <div class="rank-name">Green Irish Tweed</div>
+          <div class="rank-why">Works in every season, any occasion, day or night. The definition of a versatile fragrance.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:98%"></div></div>
+          <div class="versatility-score">9.8 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.05s">
+        <div class="rank-pos">2</div>
+        <div class="rank-num">149</div>
+        <div class="rank-info">
+          <div class="rank-name">Baccarat Rouge 540</div>
+          <div class="rank-why">Genuinely season-spanning. Light enough for warmer months, distinctive enough for winter. Universally liked.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:92%"></div></div>
+          <div class="versatility-score">9.2 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.10s">
+        <div class="rank-pos">3</div>
+        <div class="rank-num">157</div>
+        <div class="rank-info">
+          <div class="rank-name">Terre d'Hermès</div>
+          <div class="rank-why">Refined and adaptable. Works casually or smartly, spring through autumn. Only struggles in high summer heat.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:86%"></div></div>
+          <div class="versatility-score">8.6 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.15s">
+        <div class="rank-pos">4</div>
+        <div class="rank-num">120</div>
+        <div class="rank-info">
+          <div class="rank-name">Eros</div>
+          <div class="rank-why">Strong projection but versatile across casual and smart contexts. Best spring to autumn; can be loud in heat.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:80%"></div></div>
+          <div class="versatility-score">8.0 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.20s">
+        <div class="rank-pos">5</div>
+        <div class="rank-num">346</div>
+        <div class="rank-info">
+          <div class="rank-name">Lime Basil & Mandarin</div>
+          <div class="rank-why">Your best summer weapon. Loses relevance in cold weather but within its season is an effortless everyday choice.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:74%"></div></div>
+          <div class="versatility-score">7.4 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.25s">
+        <div class="rank-pos">6</div>
+        <div class="rank-num">223</div>
+        <div class="rank-info">
+          <div class="rank-name">Tobacco Vanille</div>
+          <div class="rank-why">Within cool/cold months it's an all-day workhorse. Approachable and crowd-pleasing. Just useless in summer.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:70%"></div></div>
+          <div class="versatility-score">7.0 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.30s">
+        <div class="rank-pos">7</div>
+        <div class="rank-num">300</div>
+        <div class="rank-info">
+          <div class="rank-name">Angels' Share</div>
+          <div class="rank-why">Autumn and winter staple. Unique enough to be memorable but accessible enough for regular wear.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:66%"></div></div>
+          <div class="versatility-score">6.6 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.35s">
+        <div class="rank-pos">8</div>
+        <div class="rank-num">162</div>
+        <div class="rank-info">
+          <div class="rank-name">Bleecker Street</div>
+          <div class="rank-why">Good spring-summer casual option but underwhelming sillage limits its range. Inoffensive but unremarkable.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:62%"></div></div>
+          <div class="versatility-score">6.2 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.40s">
+        <div class="rank-pos">9</div>
+        <div class="rank-num">219</div>
+        <div class="rank-info">
+          <div class="rank-name">Bitter Peach</div>
+          <div class="rank-why">Versatile within its niche — cool-weather evenings and date nights — but the niche itself is narrow.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:56%"></div></div>
+          <div class="versatility-score">5.6 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.45s">
+        <div class="rank-pos">10</div>
+        <div class="rank-num">108</div>
+        <div class="rank-info">
+          <div class="rank-name">Halfeti</div>
+          <div class="rank-why">Complex and distinctive — autumn evenings and cooler days. Too heavy and specific for casual or warm-weather use.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:50%"></div></div>
+          <div class="versatility-score">5.0 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.50s">
+        <div class="rank-pos">11</div>
+        <div class="rank-num">494</div>
+        <div class="rank-info">
+          <div class="rank-name">Lost Cherry</div>
+          <div class="rank-why">Seductive and specific. Excellent in its lane — cool evenings, date nights — but that's where it stays.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:45%"></div></div>
+          <div class="versatility-score">4.5 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.55s">
+        <div class="rank-pos">12</div>
+        <div class="rank-num">170</div>
+        <div class="rank-info">
+          <div class="rank-name">Oud Saffron</div>
+          <div class="rank-why">Winter specialist. Bold enough to command attention in cold weather but far too intense outside that context.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:40%"></div></div>
+          <div class="versatility-score">4.0 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.60s">
+        <div class="rank-pos">13</div>
+        <div class="rank-num">412</div>
+        <div class="rank-info">
+          <div class="rank-name">Tuscan Leather</div>
+          <div class="rank-why">Statement fragrance for cold weather and evenings. Polarising enough that occasion and audience always matter.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:36%"></div></div>
+          <div class="versatility-score">3.6 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.65s">
+        <div class="rank-pos">14</div>
+        <div class="rank-num">175</div>
+        <div class="rank-info">
+          <div class="rank-name">Ombre Nomade</div>
+          <div class="rank-why">One of the most intense ouds available. Extraordinary in cold evenings. Completely wrong everywhere else.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:28%"></div></div>
+          <div class="versatility-score">2.8 / 10</div>
+        </div>
+      </div>
+
+      <div class="rank-item" style="animation-delay:0.70s">
+        <div class="rank-pos">15</div>
+        <div class="rank-num">514</div>
+        <div class="rank-info">
+          <div class="rank-name">Black Orchid</div>
+          <div class="rank-why">The most occasion-specific in your collection. Theatrical, bold, and unforgettable — but only when the setting earns it.</div>
+        </div>
+        <div class="versatility-bar-wrap">
+          <div class="versatility-bar"><div class="versatility-fill" style="width:22%"></div></div>
+          <div class="versatility-score">2.2 / 10</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========== PAIRING ========== -->
+  <div class="tab-panel" id="tab-pairing">
+
+    <p class="pairing-intro">
+      Layering fragrances means applying one first (usually the heavier or more base-heavy scent), letting it dry, then applying the second on top. Start light — one spray each is enough to test. The pairings below are chosen from your existing 15.
+    </p>
+
+    <div class="section-label">Recommended Pairings</div>
+    <div class="pairing-list">
+
+      <div class="pairing-card">
+        <div class="pairing-top">
+          <span class="pairing-num">318</span>
+          <span class="pairing-frag">Green Irish Tweed</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num">157</span>
+          <span class="pairing-frag">Terre d'Hermès</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect">Earthy fern with mineral depth</span>
+        </div>
+        <p class="pairing-desc">The fresh verbena and violet of Green Irish Tweed lifts the grapefruit and vetiver of Terre d'Hermès into something that smells genuinely outdoorsy — like walking through damp woodland in early spring. One of the most natural-feeling combinations in your collection.</p>
+        <div class="pairing-technique">Technique: <span>Apply Terre d'Hermès first as base · GIT on pulse points after 2 mins</span></div>
+      </div>
+
+      <div class="pairing-card">
+        <div class="pairing-top">
+          <span class="pairing-num">223</span>
+          <span class="pairing-frag">Tobacco Vanille</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num">300</span>
+          <span class="pairing-frag">Angels' Share</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect">Warm cognac tobacco — a fireplace in a bottle</span>
+        </div>
+        <p class="pairing-desc">Both fragrances share boozy, warming DNA. Together the vanilla sweetness of Tobacco Vanille fills in the gaps around Angels' Share's cognac and cinnamon, creating something richer and more complete than either alone. An absolute winter evening combination.</p>
+        <div class="pairing-technique">Technique: <span>Equal application · both on chest and wrists · allow to blend on skin</span></div>
+      </div>
+
+      <div class="pairing-card">
+        <div class="pairing-top">
+          <span class="pairing-num">149</span>
+          <span class="pairing-frag">Baccarat Rouge 540</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num">346</span>
+          <span class="pairing-frag">Lime Basil & Mandarin</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect">Airy citrus with a sweet saffron glow</span>
+        </div>
+        <p class="pairing-desc">BR540's airy sweetness pairs surprisingly well with the citrus brightness of Lime Basil & Mandarin. The lime and mandarin give BR540 a fresher, more summery opening before it settles into its signature warmth. A good warm-weather twist on an otherwise year-round fragrance.</p>
+        <div class="pairing-technique">Technique: <span>Lime Basil first · BR540 lightly on top · one spray each maximum</span></div>
+      </div>
+
+      <div class="pairing-card">
+        <div class="pairing-top">
+          <span class="pairing-num">170</span>
+          <span class="pairing-frag">Oud Saffron</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num">412</span>
+          <span class="pairing-frag">Tuscan Leather</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect">Spiced leather oud — bold and commanding</span>
+        </div>
+        <p class="pairing-desc">This is a statement pairing, not a subtle one. The saffron in Oud Saffron amplifies Tuscan Leather's raspberry-leather accord, while the oud adds a smoky depth that leather alone doesn't have. Strictly a cold evening, special occasion combination — do not wear this to the office.</p>
+        <div class="pairing-technique">Technique: <span>Tuscan Leather on skin first · Oud Saffron very lightly on top · one spray only</span></div>
+      </div>
+
+      <div class="pairing-card">
+        <div class="pairing-top">
+          <span class="pairing-num">494</span>
+          <span class="pairing-frag">Lost Cherry</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num">219</span>
+          <span class="pairing-frag">Bitter Peach</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect">Dark fruit cocktail — boozy and seductive</span>
+        </div>
+        <p class="pairing-desc">Cherry and peach share enough fruity DNA that they work together rather than compete. Lost Cherry's boozy, rosy depth anchors Bitter Peach's lighter rum-and-fruit accord. The result is warm, slightly intoxicating, and distinctly evening-only. Good for a night out with Antonia.</p>
+        <div class="pairing-technique">Technique: <span>Lost Cherry first as base · Bitter Peach lightly on wrists · let them marry for 5 mins</span></div>
+      </div>
+
+      <div class="pairing-card">
+        <div class="pairing-top">
+          <span class="pairing-num">120</span>
+          <span class="pairing-frag">Eros</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num">149</span>
+          <span class="pairing-frag">Baccarat Rouge 540</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect">Fresh-sweet with magnetic sillage</span>
+        </div>
+        <p class="pairing-desc">Eros's fresh minty-green opening softens BR540's sweetness and gives it a more masculine edge, while BR540 adds warmth and longevity to Eros's sometimes-fleeting drydown. A genuinely crowd-pleasing combination with excellent projection for the temperature range where both work well.</p>
+        <div class="pairing-technique">Technique: <span>BR540 on chest · Eros on neck and wrists · spring and autumn only</span></div>
+      </div>
+
+    </div>
+
+    <div class="section-label" style="margin-top:28px;">Pairings to Avoid</div>
+    <div class="pairing-list">
+      <div class="pairing-card" style="border-color:#f0c0c0; background:#fdf8f8;">
+        <div class="pairing-top">
+          <span class="pairing-num" style="color:#8b2020;">175</span>
+          <span class="pairing-frag">Ombre Nomade</span>
+          <span class="pairing-plus">+</span>
+          <span class="pairing-num" style="color:#8b2020;">514</span>
+          <span class="pairing-frag">Black Orchid</span>
+        </div>
+        <div class="pairing-result">
+          <span class="pairing-arrow">CREATES →</span>
+          <span class="pairing-effect" style="color:#8b2020;">Suffocating — too much of everything</span>
+        </div>
+        <p class="pairing-desc">Both are among the heaviest fragrances in your collection. Layering two high-intensity, resinous ouds produces something overwhelming rather than complex. These are better left to compete on separate evenings.</p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

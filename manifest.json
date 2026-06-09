@@ -1,0 +1,25 @@
+{
+  "name": "Today's Scent",
+  "short_name": "Scent",
+  "description": "Daily fragrance recommendation based on Birkenhead weather",
+  "start_url": "/scent-reserve/daily-recommendation.html",
+  "scope": "/scent-reserve/",
+  "display": "standalone",
+  "background_color": "#0d0b08",
+  "theme_color": "#0d0b08",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/scent-reserve/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/scent-reserve/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

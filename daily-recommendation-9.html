@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d0b08">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Today's Scent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Today's Scent · Scent Reserve</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0b08;
+  --surface: #13110d;
+  --surface2: #1c1812;
+  --gold: #c9a84c;
+  --gold-dim: #7a6330;
+  --cream: #e8dfc8;
+  --cream-dim: #8a8070;
+  --rule: rgba(201,168,76,0.18);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px 48px;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.7;
+}
+
+.wrap {
+  max-width: 560px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.eyebrow {
+  font-size: .56rem;
+  letter-spacing: .4em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.rule-gold {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  margin: 0 auto 32px;
+}
+
+/* Weather strip */
+.weather-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 36px;
+  flex-wrap: wrap;
+}
+
+.weather-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.weather-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1;
+}
+
+.weather-lbl {
+  font-size: .48rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.weather-divider { width:1px; height:32px; background:var(--rule); }
+
+/* Recommendation card */
+.rec-card {
+  background: var(--surface);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 2px;
+  padding: 32px 28px;
+  margin-bottom: 16px;
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.rec-card::before {
+  content:'';
+  position:absolute;
+  top:-40px; left:-40px;
+  width:200px; height:200px;
+  background:radial-gradient(circle, rgba(201,168,76,0.05), transparent 70%);
+  pointer-events:none;
+}
+
+.rec-loading {
+  text-align:center;
+  color:var(--cream-dim);
+  font-size:.62rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+}
+
+.rec-loading .dot-anim::after {
+  content:'';
+  animation: dots 1.4s infinite;
+}
+
+@keyframes dots {
+  0%   { content:''; }
+  33%  { content:'.'; }
+  66%  { content:'..'; }
+  100% { content:'...'; }
+}
+
+.rec-num { font-size:.6rem; letter-spacing:.3em; color:var(--gold); margin-bottom:8px; }
+
+.rec-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 8vw, 3rem);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--cream);
+  margin-bottom: 18px;
+}
+
+.rec-name em { font-style:italic; color:var(--gold); }
+
+.rec-reason {
+  font-size: .62rem;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  letter-spacing: .03em;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+}
+
+.rec-spray {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:14px;
+}
+
+.spray-dots { display:flex; gap:4px; }
+
+.spray-dot {
+  width:8px; height:8px;
+  border-radius:50%;
+  border:1.5px solid rgba(201,168,76,0.2);
+  background:transparent;
+}
+
+.spray-dot.filled { background:var(--gold); border-color:var(--gold); }
+
+.spray-text { font-size:.54rem; color:var(--cream-dim); letter-spacing:.1em; }
+
+.rec-worn {
+  font-size:.52rem;
+  color:var(--cream-dim);
+  letter-spacing:.1em;
+  margin-top:10px;
+  opacity:.7;
+}
+
+/* Actions */
+.actions { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+
+.btn-wore {
+  flex:1;
+  background:rgba(201,168,76,0.1);
+  border:1px solid rgba(201,168,76,0.3);
+  color:var(--gold);
+  font-family:'DM Mono',monospace;
+  font-size:.54rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:12px;
+  border-radius:2px;
+  cursor:pointer;
+  transition:background .15s, border-color .15s;
+  text-align:center;
+}
+.btn-wore:hover { background:rgba(201,168,76,0.2); border-color:var(--gold); }
+.btn-wore:active { transform:scale(.98); }
+.btn-wore:disabled { opacity:.4; cursor:default; }
+
+.btn-refresh {
+  background:transparent;
+  border:1px solid rgba(138,128,112,0.3);
+  color:var(--cream-dim);
+  font-family:'DM Mono',monospace;
+  font-size:.54rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:12px 16px;
+  border-radius:2px;
+  cursor:pointer;
+  transition:border-color .15s, color .15s;
+}
+.btn-refresh:hover { border-color:var(--cream-dim); color:var(--cream); }
+
+/* Occasion selector */
+.occasion-wrap {
+  margin-bottom: 24px;
+}
+
+.occasion-label {
+  font-size: .5rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.occasion-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.occ-btn {
+  background: var(--surface2);
+  border: 1px solid rgba(201,168,76,0.1);
+  border-radius: 2px;
+  padding: 9px 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: .5rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  cursor: pointer;
+  transition: all .15s;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.occ-btn:hover {
+  border-color: var(--gold-dim);
+  color: var(--cream);
+}
+
+.occ-btn.selected {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.1);
+  color: var(--gold);
+}
+
+.occ-icon { font-size: .9rem; line-height: 1; }
+
+/* Rec card meta row */
+.rec-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--rule);
+}
+
+.rec-seasons { display:flex; gap:4px; }
+
+.s-badge {
+  font-size: .44rem;
+  letter-spacing: .1em;
+  padding: 2px 5px;
+  border-radius: 1px;
+  text-transform: uppercase;
+  border: 1px solid;
+  font-weight: 500;
+}
+
+.s-badge.sp { color:#6aab7e; border-color:#6aab7e; }
+.s-badge.su { color:#d4914a; border-color:#d4914a; }
+.s-badge.au { color:#c45a2a; border-color:#c45a2a; }
+.s-badge.wi { color:#5a8ab0; border-color:#5a8ab0; }
+.s-badge.off { color:var(--cream-dim); border-color:rgba(138,128,112,0.25); opacity:.5; }
+
+.rec-bottle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rec-bottle-label {
+  font-size: .46rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.rec-bottle-track {
+  width: 60px;
+  height: 5px;
+  background: rgba(201,168,76,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rec-bottle-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.rec-bottle-pct {
+  font-size: .46rem;
+  color: var(--cream-dim);
+  letter-spacing: .06em;
+  min-width: 32px;
+}
+
+/* Pairing card */
+.pair-rec-card {
+  background: var(--surface);
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: 2px;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.pair-rec-label {
+  font-size: .48rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 10px;
+}
+
+.pair-rec-names {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.pair-rec-names em { font-style:italic; color:var(--gold); }
+.pair-rec-plus { color:var(--gold-dim); margin:0 6px; }
+
+.pair-rec-detail {
+  font-size: .56rem;
+  color: var(--cream-dim);
+  line-height: 1.6;
+  margin-bottom: 10px;
+  letter-spacing: .03em;
+}
+
+.pair-rec-bottles {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.pair-bottle-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pair-bottle-num {
+  font-size: .48rem;
+  color: var(--gold);
+  letter-spacing: .1em;
+}
+
+.pair-bottle-track {
+  width: 48px;
+  height: 4px;
+  background: rgba(201,168,76,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pair-bottle-fill { height:100%; border-radius:2px; }
+
+.pair-bottle-pct {
+  font-size: .46rem;
+  color: var(--cream-dim);
+  letter-spacing: .05em;
+}
+
+.btn-wore-pair {
+  width: 100%;
+  background: rgba(201,168,76,0.06);
+  border: 1px solid rgba(201,168,76,0.2);
+  color: var(--gold-dim);
+  font-family: 'DM Mono', monospace;
+  font-size: .5rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  padding: 9px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+  text-align: center;
+}
+.btn-wore-pair:hover { background:rgba(201,168,76,0.14); border-color:var(--gold); color:var(--gold); }
+.btn-wore-pair:disabled { opacity:.35; cursor:default; }
+
+/* Alt picks */
+.alt-label {
+  font-size:.5rem;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  color:var(--cream-dim);
+  margin-bottom:10px;
+  opacity:.6;
+}
+
+.alt-list { display:flex; gap:8px; flex-wrap:wrap; }
+
+.alt-pill {
+  background:var(--surface2);
+  border:1px solid rgba(201,168,76,0.1);
+  border-radius:2px;
+  padding:6px 12px;
+  font-size:.54rem;
+  color:var(--cream-dim);
+  letter-spacing:.08em;
+  cursor:pointer;
+  transition:border-color .15s, color .15s;
+}
+.alt-pill:hover { border-color:var(--gold-dim); color:var(--cream); }
+.alt-pill .alt-num { color:var(--gold); margin-right:5px; }
+
+.error-msg {
+  text-align:center;
+  color:#c47a3a;
+  font-size:.6rem;
+  letter-spacing:.1em;
+  line-height:1.8;
+}
+
+footer {
+  margin-top:32px;
+  text-align:center;
+  font-size:.5rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--cream-dim);
+  opacity:.3;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Scent Reserve · Birkenhead</div>
+  <div class="rule-gold"></div>
+
+  <div class="weather-strip">
+    <div class="weather-item">
+      <div class="weather-val" id="wTemp">—</div>
+      <div class="weather-lbl">°C</div>
+    </div>
+    <div class="weather-divider"></div>
+    <div class="weather-item">
+      <div class="weather-val" id="wDesc" style="font-size:.9rem;font-family:'DM Mono',monospace;letter-spacing:.04em;text-align:center">—</div>
+      <div class="weather-lbl">Conditions</div>
+    </div>
+    <div class="weather-divider"></div>
+    <div class="weather-item">
+      <div class="weather-val" id="wHumid">—</div>
+      <div class="weather-lbl">% Humidity</div>
+    </div>
+  </div>
+
+  <div class="occasion-wrap">
+    <div class="occasion-label">What's the occasion?</div>
+    <div class="occasion-grid">
+      <button class="occ-btn selected" data-occ="casual"><span class="occ-icon">👕</span>Casual</button>
+      <button class="occ-btn" data-occ="work"><span class="occ-icon">💼</span>Work</button>
+      <button class="occ-btn" data-occ="evening"><span class="occ-icon">🌙</span>Evening</button>
+      <button class="occ-btn" data-occ="date"><span class="occ-icon">🕯️</span>Date Night</button>
+      <button class="occ-btn" data-occ="match"><span class="occ-icon">⚽</span>Match Day</button>
+      <button class="occ-btn" data-occ="outdoors"><span class="occ-icon">🥾</span>Outdoors</button>
+      <button class="occ-btn" data-occ="travel"><span class="occ-icon">🚗</span>Travel</button>
+      <button class="occ-btn" data-occ="family"><span class="occ-icon">🏡</span>Family / Social</button>
+    </div>
+  </div>
+
+  <div class="rec-card" id="recCard">
+    <div class="rec-loading">Checking weather &amp; wear history<span class="dot-anim"></span></div>
+  </div>
+
+  <div class="actions" id="actions" style="display:none">
+    <button class="btn-wore" id="btnWore">✓ Wore this today</button>
+    <button class="btn-refresh" id="btnRefresh">↺ Different pick</button>
+  </div>
+
+  <div id="pairSection" style="display:none"></div>
+
+  <div id="altSection" style="display:none">
+    <div class="alt-label">Also works today</div>
+    <div class="alt-list" id="altList"></div>
+  </div>
+
+  <footer>Today's Scent · Live weather · Wear history</footer>
+</div>
+
+<script>
+// ── Collection ────────────────────────────────────────────────────────────────
+const FRAGS = [
+  { id:'108', house:"Penhaligon's",           name:'Halfeti',               sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:18, humidity:'any', seasons:['sp','au','wi'],
+    reasons: {
+      cold:  'Halfeti thrives in cold, damp conditions — the oud and rose deepen beautifully.',
+      cool:  'Cool overcast days suit Halfeti well — complex enough to reward the conditions.',
+      mild:  'A good autumn pick — warm enough for the saffron and leather to open up.',
+    }
+  },
+  { id:'120', house:'Versace', name:'Eros',                  sprays:3, bottleMl:100,
+    placement:'Both sides of neck, one wrist',
+    minTemp:8, maxTemp:25, humidity:'any', seasons:['sp','au'],
+    reasons: {
+      warm:  'Eros projects brilliantly in mild warmth — fresh and green with good longevity.',
+      cool:  'The minty freshness works well against cool air today.',
+      mild:  'A reliable spring pick — versatile enough for any occasion.',
+    }
+  },
+  { id:'149', house:'Maison Francis Kurkdjian', name:'Baccarat Rouge 540',    sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:99, humidity:'any', seasons:['sp','su','au','wi'],
+    reasons: {
+      warm:  'BR540 projects beautifully in warmth — the saffron and ambergris really sing.',
+      cool:  'A year-round performer. The airy sweetness works in any conditions.',
+      cold:  'BR540 holds up well in cold — the cedarwood base gives it warmth.',
+      mild:  'The most versatile in your collection — always a safe and excellent pick.',
+    }
+  },
+  { id:'157', house:'Hermès', name:"Terre d'Hermès",        sprays:3, bottleMl:100,
+    placement:'Both sides of neck, one wrist',
+    minTemp:8, maxTemp:22, humidity:'any', seasons:['sp','au'],
+    reasons: {
+      cool:  "Today's damp, overcast conditions are exactly where Terre d'Hermès shines — earthy and mineral.",
+      mild:  "The earthy vetiver and flint open beautifully in mild conditions.",
+      warm:  "A spring classic — the grapefruit top note lifts in the warmth.",
+    }
+  },
+  { id:'162', house:'Maison Margiela', name:'Bleecker Street',       sprays:4, bottleMl:30,
+    placement:'Both sides of neck, both wrists',
+    minTemp:14, maxTemp:99, humidity:'any', seasons:['sp','su'],
+    reasons: {
+      warm:  'Bleecker Street is your lightest casual fragrance — perfect for warm days when you want something understated.',
+      hot:   'Light and inoffensive in the heat — good when you want just a hint of fragrance.',
+    }
+  },
+  { id:'170', house:'Tom Ford', name:'Oud Saffron',           sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:10, humidity:'any', seasons:['wi'],
+    reasons: {
+      cold:  'Oud Saffron is a winter specialist — the spiced oud and saffron are made for cold air.',
+      cool:  'Bold and commanding in cool conditions — only if you want a serious statement today.',
+    }
+  },
+  { id:'175', house:'Louis Vuitton', name:'Ombre Nomade',          sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:10, humidity:'any', seasons:['wi'],
+    reasons: {
+      cold:  'Ombre Nomade is one of the great cold-weather ouds — enveloping and long-lasting.',
+      cool:  'A winter heavyweight. Only reach for it if conditions are genuinely cold today.',
+    }
+  },
+  { id:'219', house:'Tom Ford', name:'Bitter Peach',          sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:18, humidity:'any', seasons:['au','wi'],
+    reasons: {
+      cool:  'Bitter Peach works well in cool conditions — the boozy peach stays controlled rather than cloying.',
+      cold:  'The rum accord adds warmth on cold days — good for evenings especially.',
+    }
+  },
+  { id:'223', house:'Tom Ford', name:'Tobacco Vanille',       sprays:3, bottleMl:100,
+    placement:'Both sides of neck, one wrist',
+    minTemp:-99, maxTemp:16, humidity:'any', seasons:['au','wi'],
+    reasons: {
+      cold:  'Tobacco Vanille is one of the great cold-weather fragrances — rich, warm, and comforting.',
+      cool:  'The vanilla and spice open beautifully in cool conditions. A crowd-pleaser today.',
+      mild:  'As the temperature drops into autumn range this really comes into its own.',
+    }
+  },
+  { id:'330', house:'Kilian', name:"Angels' Share",         sprays:3, bottleMl:100,
+    placement:'Both sides of neck, one wrist',
+    minTemp:-99, maxTemp:18, humidity:'any', seasons:['au','wi'],
+    reasons: {
+      cold:  'Angels\' Share is a cold-weather staple — the cognac and cinnamon warm you from the outside in.',
+      cool:  'The boozy warmth of Angels\' Share suits today\'s conditions perfectly.',
+      mild:  'A reliable autumn pick — distinctive without being overwhelming.',
+    }
+  },
+  { id:'318', house:'Creed', name:'Green Irish Tweed',     sprays:3, bottleMl:100,
+    placement:'Both sides of neck, one wrist',
+    minTemp:-99, maxTemp:99, humidity:'any', seasons:['sp','su','au','wi'],
+    reasons: {
+      rain:  'Green Irish Tweed was made for cool, damp days — it smells like clean fresh air.',
+      cool:  'The classic choice for unpredictable British weather — versatile and always right.',
+      warm:  'Fresh and clean in the warmth — effortless for any occasion today.',
+      cold:  'Works year-round including cold days — the violet leaf and verbena carry well.',
+      mild:  'Your most versatile fragrance. Always a safe and excellent pick.',
+    }
+  },
+  { id:'346', house:'Jo Malone', name:'Lime Basil & Mandarin', sprays:4, bottleMl:100,
+    placement:'Both sides of neck, both wrists',
+    minTemp:16, maxTemp:99, humidity:'any', seasons:['su'],
+    reasons: {
+      warm:  'Lime Basil & Mandarin is your best summer fragrance — crisp citrus works perfectly in the heat.',
+      hot:   'The citrus and basil are refreshing in hot conditions — made for days like today.',
+    }
+  },
+  { id:'412', house:'Tom Ford', name:'Tuscan Leather',        sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:16, humidity:'any', seasons:['au','wi'],
+    reasons: {
+      cold:  'Tuscan Leather is bold and commanding in cold air — the leather and raspberry really project.',
+      cool:  'A statement pick for cool conditions — assertive without being aggressive.',
+    }
+  },
+  { id:'494', house:'Tom Ford', name:'Lost Cherry',           sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:18, humidity:'any', seasons:['au','wi'],
+    reasons: {
+      cool:  'Lost Cherry is seductive and intimate in cool conditions — the cherry and rose stay elegant.',
+      cold:  'The boozy, rosy depth of Lost Cherry works well in cold air.',
+    }
+  },
+  { id:'514', house:'Tom Ford', name:'Black Orchid',          sprays:2, bottleMl:100,
+    placement:'One side of neck, one wrist',
+    minTemp:-99, maxTemp:14, humidity:'any', seasons:['au','wi'],
+    reasons: {
+      cold:  'Black Orchid is a cold-weather statement — dark, theatrical, and unmistakable.',
+      cool:  'One of Tom Ford\'s most distinctive — cool, overcast days suit its character.',
+    }
+  },
+];
+
+const BOTTLE_ML    = 100;
+const ML_PER_SPRAY = 0.1;
+
+// ── Pairings ──────────────────────────────────────────────────────────────────
+const PAIRINGS = [
+  { id:'p1', ids:['318','157'], sprays:[2,1],
+    effect:'Earthy fern with mineral depth',
+    technique:'Apply 157 on one wrist first, then 318 on both sides of neck after 2 mins.',
+    occasions:['casual','outdoors','family'],
+    seasons:['sp'] },
+  { id:'p2', ids:['223','330'], sprays:[1,1],
+    effect:'A fireplace in a bottle',
+    technique:'Equal application — one side of neck each, let them blend on skin.',
+    occasions:['evening','date','family'],
+    seasons:['au','wi'] },
+  { id:'p3', ids:['149','346'], sprays:[1,2],
+    effect:'Airy citrus with a sweet saffron glow',
+    technique:'Apply 346 on both wrists first, then 149 lightly on one side of neck.',
+    occasions:['casual','family'],
+    seasons:['su'] },
+  { id:'p4', ids:['170','412'], sprays:[1,1],
+    effect:'Spiced leather oud — bold and commanding',
+    technique:'Apply 412 on one wrist first, then 170 very lightly on one side of neck.',
+    occasions:['evening','date'],
+    seasons:['wi'] },
+  { id:'p5', ids:['494','219'], sprays:[1,1],
+    effect:'Dark fruit cocktail — boozy and seductive',
+    technique:'Apply 494 on one side of neck first, then 219 lightly on one wrist.',
+    occasions:['evening','date'],
+    seasons:['au','wi'] },
+  { id:'p6', ids:['120','149'], sprays:[1,1],
+    effect:'Fresh-sweet with magnetic sillage',
+    technique:'Apply 149 on one wrist first, then 120 on one side of neck.',
+    occasions:['casual','family','match'],
+    seasons:['sp','au'] },
+];
+
+// ── Storage ───────────────────────────────────────────────────────────────────
+async function loadState(id) {
+  try {
+    const r = await window.storage.get('frag2:' + id);
+    return r ? JSON.parse(r.value) : null;
+  } catch { return null; }
+}
+
+async function saveState(id, data) {
+  try { await window.storage.set('frag2:' + id, JSON.stringify(data)); }
+  catch(e) { console.error(e); }
+}
+
+// ── Weather ───────────────────────────────────────────────────────────────────
+async function fetchWeather() {
+  const url = 'https://api.open-meteo.com/v1/forecast?latitude=53.39&longitude=-3.03&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&wind_speed_unit=mph&timezone=Europe%2FLondon';
+  const r   = await fetch(url);
+  const d   = await r.json();
+  const c   = d.current;
+  const code = c.weather_code;
+
+  let desc = 'Clear';
+  if      (code >= 95) desc = 'Thunderstorm';
+  else if (code >= 71) desc = 'Snow';
+  else if (code >= 61) desc = 'Rain';
+  else if (code >= 51) desc = 'Drizzle';
+  else if (code >= 45) desc = 'Foggy';
+  else if (code >= 3)  desc = 'Overcast';
+  else if (code >= 1)  desc = 'Cloudy';
+
+  return {
+    temp:     Math.round(c.temperature_2m),
+    humidity: Math.round(c.relative_humidity_2m),
+    wind:     Math.round(c.wind_speed_10m),
+    desc,
+    code,
+    isRain:   code >= 51 && code < 71,
+  };
+}
+
+// ── Days since worn ───────────────────────────────────────────────────────────
+function daysSince(iso) {
+  if (!iso) return 999;
+  return Math.floor((Date.now() - new Date(iso)) / 86400000);
+}
+
+function daysAgoText(iso) {
+  if (!iso) return 'never worn';
+  const d = daysSince(iso);
+  if (d === 0) return 'worn today';
+  if (d === 1) return 'worn yesterday';
+  return 'last worn ' + d + ' days ago';
+}
+
+// ── Scoring engine ────────────────────────────────────────────────────────────
+function weatherKey(temp, isRain) {
+  if (isRain) return 'rain';
+  if (temp >= 22) return 'hot';
+  if (temp >= 16) return 'warm';
+  if (temp >= 10) return 'mild';
+  if (temp >= 5)  return 'cool';
+  return 'cold';
+}
+
+function scoreFrag(frag, weather, state, excluded, occasion) {
+  if (excluded.includes(frag.id)) return -999;
+
+  const temp   = weather.temp;
+  const wKey   = weatherKey(temp, weather.isRain);
+  let score    = 100;
+
+  // Temperature range hard limits
+  if (temp < frag.minTemp || temp > frag.maxTemp) score -= 80;
+
+  // Season match
+  const month = new Date().getMonth();
+  const curSeason = month <= 1 || month === 11 ? 'wi'
+    : month <= 4 ? 'sp'
+    : month <= 7 ? 'su'
+    : 'au';
+  if (!frag.seasons.includes(curSeason)) score -= 30;
+
+  // Recency penalty
+  if (state) {
+    const d = daysSince(state.lastWorn);
+    if (d === 0) score -= 100;
+    else if (d === 1) score -= 40;
+    else if (d <= 3) score -= 10;
+    if (d > 14) score += 15;
+    if (d > 30) score += 10;
+  } else {
+    score += 5;
+  }
+
+  // Low bottle penalty
+  if (state && state.ml !== undefined) {
+    const bottleMl = frag.bottleMl || BOTTLE_ML;
+    const pct = state.ml / bottleMl;
+    if (pct < 0.05) score -= 20;
+  }
+
+  // Weather bonuses
+  if (frag.id === '318' && weather.isRain) score += 20;
+  if (frag.id === '149') score += 10;
+  if ((frag.id === '175' || frag.id === '170') && temp > 12) score -= 50;
+  if ((frag.id === '346' || frag.id === '162') && temp < 14) score -= 40;
+
+  // ── Occasion scoring ──────────────────────────────────────────────────────
+  if (occasion === 'casual') {
+    // Light, fresh, versatile — penalise heavy statement fragrances
+    if (['318','149','120','157','162','346'].includes(frag.id)) score += 20;
+    if (['175','170','514','412'].includes(frag.id)) score -= 25;
+  }
+
+  if (occasion === 'work') {
+    // Windowless office — enclosed space, central heating, no fresh air
+    // Projection amplifies significantly — must be subtle and inoffensive
+    if (['318','157'].includes(frag.id)) score += 25;       // fresh, earthy, low projection
+    if (['149'].includes(frag.id)) score += 10;             // BR540 works but keep to 1 spray
+    if (['162'].includes(frag.id)) score += 15;             // bleecker is low sillage by nature
+    if (['175','170','514','412','108'].includes(frag.id)) score -= 60; // will clear the room
+    if (['219','494'].includes(frag.id)) score -= 35;       // too sweet and evening-coded
+    if (['223','330'].includes(frag.id)) score -= 30;       // too warm and boozy for enclosed space
+    if (['120'].includes(frag.id)) score -= 15;             // Eros projects quite hard
+  }
+
+  if (occasion === 'evening') {
+    // Richer, more presence — reward warm, dark fragrances
+    if (['108','223','330','219','494','412'].includes(frag.id)) score += 25;
+    if (['162','346'].includes(frag.id)) score -= 30;
+    if (['318'].includes(frag.id)) score -= 10;
+  }
+
+  if (occasion === 'date') {
+    // Seductive, distinctive, intimate — reward crowd-pleasers and gourmands
+    if (['149','494','219','330','108'].includes(frag.id)) score += 30;
+    if (['175','170'].includes(frag.id)) score += 10;
+    if (['162','346','157'].includes(frag.id)) score -= 25;
+    if (['514'].includes(frag.id)) score += 15;
+  }
+
+  if (occasion === 'match') {
+    // Casual, robust, not precious — something you won't worry about in a crowd
+    if (['318','120','330','223'].includes(frag.id)) score += 20;
+    if (['149','175','170','514','494'].includes(frag.id)) score -= 20;
+    if (['412'].includes(frag.id)) score -= 15;
+  }
+
+  if (occasion === 'outdoors') {
+    // Fresh, earthy, works in open air — penalise heavy indoorsy fragrances
+    if (['318','157','120','346','162'].includes(frag.id)) score += 25;
+    if (['175','170','514','412','108'].includes(frag.id)) score -= 30;
+    if (['223','330'].includes(frag.id)) score -= 15;
+  }
+
+  if (occasion === 'travel') {
+    // Enclosed vehicle or public transport — long duration, respect other passengers
+    // Similar logic to work but even more restrained — err toward light and skin-close
+    if (['318','157','162'].includes(frag.id)) score += 25;  // low projection, pleasant
+    if (['149'].includes(frag.id)) score += 5;               // BR540 at 1 spray is fine
+    if (['175','170','514','412','108'].includes(frag.id)) score -= 70; // absolutely not
+    if (['219','494','223','330'].includes(frag.id)) score -= 40;       // too much in a car or train
+    if (['120'].includes(frag.id)) score -= 20;              // projects too hard
+  }
+
+  if (occasion === 'family') {
+    // Relaxed social gathering — universally inoffensive, approachable, warm
+    if (['318','149','223','330','120'].includes(frag.id)) score += 20;  // crowd-pleasers
+    if (['157','219','494'].includes(frag.id)) score += 10;              // pleasant and easy
+    if (['175','170','514'].includes(frag.id)) score -= 35;              // too polarising
+    if (['412','108'].includes(frag.id)) score -= 20;                    // too heavy/specific
+  }
+
+  return score;
+}
+
+function pickReason(frag, weather, occasion) {
+  const wKey = weatherKey(weather.temp, weather.isRain);
+  const r = frag.reasons;
+
+  // Occasion-specific overrides
+  const occReasons = {
+    work:    { '318': 'Green Irish Tweed is ideal for a windowless office — fresh and clean with low projection that stays close to skin.',
+               '149': 'BR540 works in an office but keep it to 1 spray — the sweetness amplifies in enclosed spaces with no fresh air.',
+               '157': "Terre d'Hermès is refined and earthy — projects quietly enough for a windowless office environment.",
+               '162': 'Bleecker Street is your lowest-sillage fragrance — a safe choice when there is no ventilation.' },
+    date:    { '149': 'BR540 is one of the great date fragrances — distinctive, warm, and universally appealing.',
+               '494': 'Lost Cherry is seductive and intimate — made for close quarters.',
+               '219': 'Bitter Peach is warm and boozy — intriguing without being overwhelming.',
+               '330': "Angels' Share smells like a sophisticated evening out — perfect for a date.",
+               '108': 'Halfeti is complex and distinctive — makes a real impression.' },
+    match:   { '318': 'Green Irish Tweed is robust and casual — worry-free in a crowd.',
+               '120': "Eros has great projection outdoors — you'll smell good without overthinking it.",
+               '330': "Angels' Share is warm and distinctive — good pub and terrace fragrance.",
+               '223': 'Tobacco Vanille is comfortable and crowd-pleasing — right for a match day.' },
+    evening: { '108': 'Halfeti is complex and commanding — made for evenings.',
+               '330': "Angels' Share smells like a warm bar — ideal for an evening out.",
+               '223': 'Tobacco Vanille is rich and comforting — perfect for a cold evening.',
+               '494': 'Lost Cherry is seductive and warm — exactly right for an evening.',
+               '412': 'Tuscan Leather is bold and assertive — a proper evening statement.' },
+    outdoors:{ '318': 'Green Irish Tweed was made for fresh air — it comes alive outdoors.',
+               '157': "Terre d'Hermès smells like damp earth and minerals — perfect for a walk.",
+               '120': 'Eros projects well in open air and the fresh notes suit being outside.' },
+    travel:  { '318': 'Green Irish Tweed is the right call for a long journey — fresh, clean, and considerate of those around you.',
+               '157': "Terre d'Hermès is earthy and low-projection — comfortable for hours in an enclosed space.",
+               '162': 'Bleecker Street is your most understated fragrance — a considerate choice for public transport or a long drive.',
+               '149': 'BR540 at a single spray is just about acceptable for travel — airy enough not to impose.' },
+    family:  { '318': 'Green Irish Tweed is universally liked — fresh and inoffensive for a relaxed social gathering.',
+               '149': 'BR540 tends to get compliments from everyone — a reliable crowd-pleaser for family or social occasions.',
+               '223': 'Tobacco Vanille is warm and approachable — the kind of fragrance people ask about.',
+               '330': "Angels' Share is distinctive but likeable — conversation-starting without being challenging.",
+               '120': 'Eros is bold enough to be noticed but familiar enough to be universally liked.' },
+    casual:  {}
+  };
+
+  const occMap = occReasons[occasion] || {};
+  if (occMap[frag.id]) return occMap[frag.id];
+  return r[wKey] || r['mild'] || r['cool'] || Object.values(r)[0];
+}
+
+function recommend(weather, states, excluded, occasion) {
+  const scored = FRAGS.map(f => ({
+    frag:  f,
+    score: scoreFrag(f, weather, states[f.id], excluded, occasion),
+  })).sort((a, b) => b.score - a.score);
+
+  const top  = scored[0].frag;
+  const alts = scored.slice(1, 4)
+    .filter(s => s.score > 0)
+    .map(s => s.frag.id);
+
+  return {
+    id:           top.id,
+    name:         top.name,
+    house:        top.house,
+    sprays:       top.sprays,
+    placement:    top.placement,
+    bottleMl:     top.bottleMl || BOTTLE_ML,
+    seasons:      top.seasons,
+    reason:       pickReason(top, weather, occasion),
+    alternatives: alts,
+  };
+}
+
+// ── Pick best pairing for occasion + weather ──────────────────────────────────
+function pickPairing(weather, states, occasion) {
+  const month = new Date().getMonth();
+  const cur = month <= 1 || month === 11 ? 'wi' : month <= 4 ? 'sp' : month <= 7 ? 'su' : 'au';
+
+  const candidates = PAIRINGS.filter(p => {
+    // Must suit the occasion
+    if (!p.occasions.includes(occasion)) return false;
+    // Must suit current season
+    if (!p.seasons.includes(cur)) return false;
+    // Neither bottle nearly empty
+    for (const fid of p.ids) {
+      const frag  = FRAGS.find(f => f.id === fid);
+      const state = states[fid];
+      const ml    = state && state.ml !== undefined ? state.ml : (frag ? frag.bottleMl || BOTTLE_ML : BOTTLE_ML);
+      const bMl   = frag ? frag.bottleMl || BOTTLE_ML : BOTTLE_ML;
+      if (ml / bMl < 0.03) return false;
+    }
+    // Neither worn today
+    for (const fid of p.ids) {
+      const state = states[fid];
+      if (state && daysSince(state.lastWorn) === 0) return false;
+    }
+    return true;
+  });
+
+  return candidates.length ? candidates[0] : null;
+}
+
+function renderPairing(pairing, states) {
+  if (!pairing) {
+    document.getElementById('pairSection').style.display = 'none';
+    return;
+  }
+
+  const frags = pairing.ids.map(id => FRAGS.find(f => f.id === id));
+
+  // Bottle bars for both
+  let bottlesHtml = pairing.ids.map((fid, i) => {
+    const frag  = frags[i];
+    const state = states[fid];
+    const bMl   = frag ? frag.bottleMl || BOTTLE_ML : BOTTLE_ML;
+    const ml    = state && state.ml !== undefined ? state.ml : bMl;
+    const pct   = Math.max(0, Math.min(100, Math.round((ml / bMl) * 100)));
+    const color = pct > 25 ? 'var(--gold)' : pct > 10 ? 'var(--summer)' : 'var(--autumn)';
+    const name  = frag ? frag.name : fid;
+    return `
+      <div class="pair-bottle-item">
+        <div class="pair-bottle-num">${fid} · ${pairing.sprays[i]}sp</div>
+        <div class="pair-bottle-track"><div class="pair-bottle-fill" style="width:${pct}%;background:${color}"></div></div>
+        <div class="pair-bottle-pct">${ml.toFixed ? ml.toFixed(1) : ml}ml</div>
+      </div>`;
+  }).join('');
+
+  // Name HTML
+  const nameA = frags[0] ? frags[0].name.split(' ') : [pairing.ids[0]];
+  const nameB = frags[1] ? frags[1].name.split(' ') : [pairing.ids[1]];
+  const nameHtml = `<em>${nameA[0]}</em> ${nameA.slice(1).join(' ')}<span class="pair-rec-plus">+</span><em>${nameB[0]}</em> ${nameB.slice(1).join(' ')}`;
+
+  document.getElementById('pairSection').style.display = 'block';
+  document.getElementById('pairSection').innerHTML = `
+    <div class="pair-rec-card">
+      <div class="pair-rec-label">✦ Pairing suggestion</div>
+      <div class="pair-rec-names">${nameHtml}</div>
+      <div class="pair-rec-detail">${pairing.effect} — ${pairing.technique}</div>
+      <div class="pair-rec-bottles">${bottlesHtml}</div>
+      <button class="btn-wore-pair" id="btnWorePair" data-pair="${pairing.id}">✓ Wore this pairing today</button>
+    </div>`;
+
+  document.getElementById('btnWorePair').addEventListener('click', async () => {
+    const btn = document.getElementById('btnWorePair');
+    btn.disabled = true;
+
+    for (let i = 0; i < pairing.ids.length; i++) {
+      const fid   = pairing.ids[i];
+      const frag  = FRAGS.find(f => f.id === fid);
+      const bMl   = frag ? frag.bottleMl || BOTTLE_ML : BOTTLE_ML;
+      let state   = await loadState(fid) || { ml: bMl, wornCount: 0 };
+      state.lastWorn  = new Date().toISOString();
+      state.wornCount = (state.wornCount || 0) + 1;
+      state.ml        = Math.max(0, (state.ml !== undefined ? state.ml : bMl) - (pairing.sprays[i] * ML_PER_SPRAY));
+      await saveState(fid, state);
+      allStates[fid] = state;
+    }
+
+    btn.textContent = '✓ Logged — both bottles updated';
+    // Refresh pairing bottle bars
+    renderPairing(pairing, allStates);
+    const newBtn = document.getElementById('btnWorePair');
+    if (newBtn) newBtn.disabled = true;
+    if (newBtn) newBtn.textContent = '✓ Logged — both bottles updated';
+  });
+}
+
+
+const SEASON_NAMES = {sp:'Sp',su:'Su',au:'Au',wi:'Wi'};
+const ALL_SEASONS  = ['sp','su','au','wi'];
+
+function seasonBadgesHtml(fragSeasons) {
+  const month = new Date().getMonth();
+  const cur = month <= 1 || month === 11 ? 'wi' : month <= 4 ? 'sp' : month <= 7 ? 'su' : 'au';
+  return ALL_SEASONS.map(s => {
+    const active = fragSeasons.includes(s);
+    const isCur  = s === cur;
+    const cls    = active ? s : 'off';
+    const title  = active ? (isCur ? 'Current season' : 'Suitable') : 'Not recommended';
+    return `<span class="s-badge ${cls}" title="${title}">${SEASON_NAMES[s]}</span>`;
+  }).join('');
+}
+
+function bottleBarHtml(ml, bottleMl) {
+  const pct   = Math.max(0, Math.min(100, Math.round((ml / bottleMl) * 100)));
+  const color = pct > 25 ? 'var(--gold)' : pct > 10 ? 'var(--summer)' : 'var(--autumn)';
+  return `
+    <div class="rec-bottle">
+      <div class="rec-bottle-label">Bottle</div>
+      <div class="rec-bottle-track">
+        <div class="rec-bottle-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <div class="rec-bottle-pct">${ml.toFixed ? ml.toFixed(1) : ml}ml · ${pct}%</div>
+    </div>`;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function renderRec(rec, states) {
+  const state     = states[rec.id];
+  const wornTxt   = daysAgoText(state ? state.lastWorn : null);
+  const ml        = state && state.ml !== undefined ? state.ml : rec.bottleMl;
+  const frag      = FRAGS.find(f => f.id === rec.id);
+  const seasons   = rec.seasons || (frag ? frag.seasons : []);
+
+  const nameParts = rec.name.split(' ');
+  const nameHtml  = nameParts.length > 1
+    ? `<em>${nameParts[0]}</em> ${nameParts.slice(1).join(' ')}`
+    : `<em>${rec.name}</em>`;
+
+  let dotsHtml = '';
+  for (let i = 0; i < 4; i++) {
+    dotsHtml += `<div class="spray-dot ${i < rec.sprays ? 'filled' : ''}"></div>`;
+  }
+
+  document.getElementById('recCard').innerHTML = `
+    <div class="rec-num"># ${rec.id}</div>
+    <div class="rec-name">${nameHtml}</div>
+    <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream-dim);opacity:.6;margin-bottom:16px">Inspired by ${rec.house}</div>
+    <div class="rec-reason">${rec.reason}</div>
+    <div class="rec-spray">
+      <div class="spray-dots">${dotsHtml}</div>
+      <div class="spray-text">${rec.sprays} sprays · ${rec.placement}</div>
+    </div>
+    <div class="rec-worn">${wornTxt}</div>
+    <div class="rec-meta">
+      <div class="rec-seasons">${seasonBadgesHtml(seasons)}</div>
+      ${bottleBarHtml(ml, rec.bottleMl)}
+    </div>
+  `;
+
+  document.getElementById('actions').style.display = 'flex';
+
+  // Pairing suggestion
+  const pairing = pickPairing(currentWeather, states, currentOccasion);
+  renderPairing(pairing, states);
+
+  if (rec.alternatives && rec.alternatives.length) {
+    document.getElementById('altSection').style.display = 'block';
+    const altList = document.getElementById('altList');
+    altList.innerHTML = rec.alternatives.map(altId => {
+      const af = FRAGS.find(f => f.id === altId);
+      return af ? `<div class="alt-pill" data-id="${altId}"><span class="alt-num">${altId}</span>${af.name}</div>` : '';
+    }).join('');
+
+    altList.querySelectorAll('.alt-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const af = FRAGS.find(f => f.id === pill.dataset.id);
+        if (!af) return;
+        currentId       = af.id;
+        currentSprays   = af.sprays;
+        currentBottleMl = af.bottleMl || BOTTLE_ML;
+        const aState    = allStates[af.id];
+        const aMl       = aState && aState.ml !== undefined ? aState.ml : (af.bottleMl || BOTTLE_ML);
+        let altDots = '';
+        for (let i = 0; i < 4; i++) altDots += `<div class="spray-dot ${i < af.sprays ? 'filled' : ''}"></div>`;
+        const an = af.name.split(' ');
+        document.getElementById('recCard').innerHTML = `
+          <div class="rec-num"># ${af.id}</div>
+          <div class="rec-name"><em>${an[0]}</em> ${an.slice(1).join(' ')}</div>
+          <div style="font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cream-dim);opacity:.6;margin-bottom:16px">Inspired by ${af.house}</div>
+          <div class="rec-reason">${pickReason(af, currentWeather, currentOccasion)}</div>
+          <div class="rec-spray">
+            <div class="spray-dots">${altDots}</div>
+            <div class="spray-text">${af.sprays} sprays · ${af.placement}</div>
+          </div>
+          <div class="rec-worn">${daysAgoText(aState ? aState.lastWorn : null)}</div>
+          <div class="rec-meta">
+            <div class="rec-seasons">${seasonBadgesHtml(af.seasons)}</div>
+            ${bottleBarHtml(aMl, af.bottleMl || BOTTLE_ML)}
+          </div>
+        `;
+        document.getElementById('btnWore').disabled = false;
+        document.getElementById('btnWore').textContent = '✓ Wore this today';
+      });
+    });
+  }
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let currentId, currentSprays, currentBottleMl;
+let currentWeather, allStates;
+let currentOccasion = 'casual';
+const excluded = [];
+
+// ── Occasion buttons ──────────────────────────────────────────────────────────
+document.querySelectorAll('.occ-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.occ-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    currentOccasion = btn.dataset.occ;
+
+    // Re-run recommendation with new occasion if weather already loaded
+    if (currentWeather) {
+      excluded.length = 0;
+      document.getElementById('recCard').innerHTML = '<div class="rec-loading">Adjusting for occasion<span class="dot-anim"></span></div>';
+      document.getElementById('actions').style.display    = 'none';
+      document.getElementById('altSection').style.display = 'none';
+      document.getElementById('pairSection').style.display = 'none';
+      setTimeout(() => {
+        const rec = recommend(currentWeather, allStates, excluded, currentOccasion);
+        currentId       = rec.id;
+        currentSprays   = rec.sprays;
+        currentBottleMl = rec.bottleMl;
+        renderRec(rec, allStates);
+        document.getElementById('btnWore').disabled    = false;
+        document.getElementById('btnWore').textContent = '✓ Wore this today';
+      }, 400);
+    }
+  });
+});
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+async function run() {
+  try {
+    const [weather, ...stateArr] = await Promise.all([
+      fetchWeather(),
+      ...FRAGS.map(f => loadState(f.id))
+    ]);
+
+    currentWeather = weather;
+    allStates = {};
+    FRAGS.forEach((f, i) => { allStates[f.id] = stateArr[i]; });
+
+    document.getElementById('wTemp').textContent  = weather.temp;
+    document.getElementById('wDesc').textContent  = weather.desc;
+    document.getElementById('wHumid').textContent = weather.humidity;
+
+    const rec = recommend(weather, allStates, excluded, currentOccasion);
+    currentId       = rec.id;
+    currentSprays   = rec.sprays;
+    currentBottleMl = rec.bottleMl;
+
+    renderRec(rec, allStates);
+
+  } catch(err) {
+    console.error(err);
+    document.getElementById('recCard').innerHTML = `
+      <div class="error-msg">
+        Couldn't load weather data.<br>
+        Check your connection and try again.
+      </div>`;
+  }
+}
+
+// ── Buttons ───────────────────────────────────────────────────────────────────
+document.getElementById('btnWore').addEventListener('click', async () => {
+  if (!currentId) return;
+  const btn    = document.getElementById('btnWore');
+  btn.disabled = true;
+
+  let state     = await loadState(currentId) || { ml: currentBottleMl, wornCount: 0 };
+  state.lastWorn  = new Date().toISOString();
+  state.wornCount = (state.wornCount || 0) + 1;
+  state.ml        = Math.max(0, (state.ml !== undefined ? state.ml : currentBottleMl) - (currentSprays * ML_PER_SPRAY));
+
+  await saveState(currentId, state);
+  btn.textContent = '✓ Logged — enjoy it';
+  const wornEl = document.querySelector('.rec-worn');
+  if (wornEl) wornEl.textContent = 'worn today';
+});
+
+document.getElementById('btnRefresh').addEventListener('click', () => {
+  if (currentId) excluded.push(currentId);
+  document.getElementById('recCard').innerHTML = '<div class="rec-loading">Finding another pick<span class="dot-anim"></span></div>';
+  document.getElementById('actions').style.display     = 'none';
+  document.getElementById('altSection').style.display  = 'none';
+  document.getElementById('pairSection').style.display = 'none';
+  document.getElementById('btnWore').disabled         = false;
+  document.getElementById('btnWore').textContent      = '✓ Wore this today';
+
+  setTimeout(() => {
+    const rec = recommend(currentWeather, allStates, excluded, currentOccasion);
+    currentId       = rec.id;
+    currentSprays   = rec.sprays;
+    currentBottleMl = rec.bottleMl;
+    renderRec(rec, allStates);
+  }, 600);
+});
+
+run();
+
+// ── Service Worker registration ───────────────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/scent-reserve/sw.js', { scope: '/scent-reserve/' }).catch(() => {});
+}
+</script>
+</body>
+</html>

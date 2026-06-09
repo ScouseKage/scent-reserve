@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pairing Guide · Scent Reserve</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0b08;
+  --surface: #13110d;
+  --surface2: #1c1812;
+  --gold: #c9a84c;
+  --gold-dim: #7a6330;
+  --gold-pale: rgba(201,168,76,0.06);
+  --cream: #e8dfc8;
+  --cream-dim: #8a8070;
+  --rule: rgba(201,168,76,0.2);
+  --danger: #8b2020;
+  --danger-pale: rgba(139,32,32,0.08);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  padding: 48px 24px 80px;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.7;
+}
+
+.wrap { max-width: 680px; margin: 0 auto; position:relative; z-index:1; }
+
+header {
+  text-align: center;
+  margin-bottom: 48px;
+  animation: fadeDown 0.5s ease both;
+}
+
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.eyebrow {
+  font-size: 0.58rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.6rem, 7vw, 4rem);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+h1 em { font-style: italic; color: var(--cream); }
+
+.rule-gold {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  margin: 18px auto;
+}
+
+.subhead {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+/* Intro */
+.intro {
+  background: var(--surface2);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 18px 22px;
+  margin-bottom: 40px;
+  font-size: 0.62rem;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  animation: fadeUp 0.4s ease 0.1s both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Section labels */
+.section-label {
+  font-size: 0.54rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Pairing cards */
+.pairing-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 2px;
+  padding: 20px 22px;
+  transition: border-color 0.2s, transform 0.15s;
+  animation: fadeUp 0.5s ease both;
+}
+
+.card:nth-child(1){ animation-delay:0.10s; }
+.card:nth-child(2){ animation-delay:0.17s; }
+.card:nth-child(3){ animation-delay:0.24s; }
+.card:nth-child(4){ animation-delay:0.31s; }
+.card:nth-child(5){ animation-delay:0.38s; }
+.card:nth-child(6){ animation-delay:0.45s; }
+
+.card:hover {
+  border-color: var(--gold-dim);
+  transform: translateY(-2px);
+}
+
+.card.avoid {
+  border-color: rgba(139,32,32,0.4);
+  background: var(--danger-pale);
+}
+
+.card.avoid:hover { border-color: #8b2020; }
+
+/* Fragrance combo header */
+.combo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.frag-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pill-num {
+  font-size: 0.54rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  background: rgba(201,168,76,0.1);
+  padding: 2px 6px;
+  border-radius: 1px;
+}
+
+.card.avoid .pill-num {
+  color: #c07070;
+  background: rgba(192,112,112,0.1);
+}
+
+.pill-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+.card.avoid .pill-name { color: #c07070; }
+
+.plus {
+  font-size: 1rem;
+  color: var(--gold-dim);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.card.avoid .plus { color: #8b4040; }
+
+/* Creates line */
+.creates {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.creates-arrow {
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  white-space: nowrap;
+}
+
+.creates-effect {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.card.avoid .creates-effect { color: #c07070; }
+
+/* Description */
+.card-desc {
+  font-size: 0.6rem;
+  color: var(--cream-dim);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  margin-bottom: 12px;
+}
+
+/* Technique & season footer */
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(201,168,76,0.1);
+}
+
+.card.avoid .card-footer { border-top-color: rgba(139,32,32,0.2); }
+
+.footer-pill {
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 1px;
+  border: 1px solid;
+}
+
+.footer-pill.technique {
+  color: var(--cream-dim);
+  border-color: rgba(138,128,112,0.3);
+}
+
+.footer-pill.season {
+  color: var(--gold);
+  border-color: rgba(201,168,76,0.3);
+}
+
+/* Quick reference */
+.quick-ref {
+  background: var(--surface2);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 20px 24px;
+  animation: fadeUp 0.5s ease 0.5s both;
+}
+
+.quick-ref .section-label { margin-bottom: 14px; }
+
+.ref-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ref-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(201,168,76,0.06);
+}
+
+.ref-row:last-child { border-bottom: none; }
+
+.ref-occasion {
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.ref-pick {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  color: var(--gold);
+}
+
+footer {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.54rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  opacity: 0.35;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Scent Reserve · Personal Collection</div>
+    <h1>The <em>Pairing</em> Guide</h1>
+    <div class="rule-gold"></div>
+    <div class="subhead">Layering combinations from your collection</div>
+  </header>
+
+  <div class="intro">
+    Apply the heavier or more base-heavy scent first. Let it dry for 2–5 minutes, then apply the second on top. One spray of each is enough to test — layering amplifies everything, so start lighter than you think you need.
+  </div>
+
+  <div class="section-label">Recommended Pairings</div>
+
+  <div class="pairing-grid">
+
+    <div class="card">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">318</span><span class="pill-name">Green Irish Tweed</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">157</span><span class="pill-name">Terre d'Hermès</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">Earthy fern with mineral depth</span>
+      </div>
+      <p class="card-desc">The fresh verbena and violet of Green Irish Tweed lifts the grapefruit and vetiver of Terre d'Hermès into something genuinely outdoorsy — damp woodland in early spring. One of the most natural-feeling combinations in the collection.</p>
+      <div class="card-footer">
+        <span class="footer-pill technique">Apply 157 first · GIT after 2 mins</span>
+        <span class="footer-pill season">Spring</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">223</span><span class="pill-name">Tobacco Vanille</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">300</span><span class="pill-name">Angels' Share</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">A fireplace in a bottle</span>
+      </div>
+      <p class="card-desc">Both share boozy, warming DNA. The vanilla sweetness of Tobacco Vanille fills in around Angels' Share's cognac and cinnamon, creating something richer and more complete than either alone. The best combination in your collection.</p>
+      <div class="card-footer">
+        <span class="footer-pill technique">Equal application · chest and wrists</span>
+        <span class="footer-pill season">Autumn · Winter</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">149</span><span class="pill-name">Baccarat Rouge 540</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">346</span><span class="pill-name">Lime Basil &amp; Mandarin</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">Airy citrus with a sweet saffron glow</span>
+      </div>
+      <p class="card-desc">BR540's airy sweetness pairs with the citrus brightness of Lime Basil & Mandarin. The lime and mandarin give BR540 a fresher, more summery opening before it settles into its signature warmth. A good warm-weather twist on an otherwise year-round fragrance.</p>
+      <div class="card-footer">
+        <span class="footer-pill technique">346 first · BR540 lightly on top</span>
+        <span class="footer-pill season">Summer · Early Autumn</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">170</span><span class="pill-name">Oud Saffron</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">412</span><span class="pill-name">Tuscan Leather</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">Spiced leather oud — bold and commanding</span>
+      </div>
+      <p class="card-desc">The saffron amplifies Tuscan Leather's raspberry-leather accord, while the oud adds smoky depth that leather alone doesn't have. A statement pairing — not a subtle one. Strictly a cold evening, special occasion combination. Not for the office.</p>
+      <div class="card-footer">
+        <span class="footer-pill technique">412 on skin · 170 very lightly on top</span>
+        <span class="footer-pill season">Winter only · Evening only</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">494</span><span class="pill-name">Lost Cherry</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">219</span><span class="pill-name">Bitter Peach</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">Dark fruit cocktail — boozy and seductive</span>
+      </div>
+      <p class="card-desc">Cherry and peach share enough fruity DNA that they complement rather than compete. Lost Cherry's boozy, rosy depth anchors Bitter Peach's lighter rum-and-fruit accord. Warm, slightly intoxicating, and firmly evening-only.</p>
+      <div class="card-footer">
+        <span class="footer-pill technique">494 first as base · 219 lightly on wrists</span>
+        <span class="footer-pill season">Autumn · Winter · Date Night</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">120</span><span class="pill-name">Eros</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">149</span><span class="pill-name">Baccarat Rouge 540</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">Fresh-sweet with magnetic sillage</span>
+      </div>
+      <p class="card-desc">Eros's fresh minty-green opening softens BR540's sweetness and gives it a more masculine edge, while BR540 adds warmth and longevity to Eros's sometimes-fleeting drydown. A genuinely crowd-pleasing combination with excellent projection.</p>
+      <div class="card-footer">
+        <span class="footer-pill technique">BR540 on chest · Eros on neck and wrists</span>
+        <span class="footer-pill season">Spring · Autumn</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-label">Pairing to Avoid</div>
+
+  <div class="pairing-grid">
+    <div class="card avoid">
+      <div class="combo">
+        <div class="frag-pill"><span class="pill-num">175</span><span class="pill-name">Ombre Nomade</span></div>
+        <span class="plus">+</span>
+        <div class="frag-pill"><span class="pill-num">514</span><span class="pill-name">Black Orchid</span></div>
+      </div>
+      <div class="creates">
+        <span class="creates-arrow">Creates →</span>
+        <span class="creates-effect">Suffocating — too much of everything</span>
+      </div>
+      <p class="card-desc">Both are among the heaviest fragrances in your collection. Layering two high-intensity resinous ouds produces something overwhelming rather than complex. These are better left to compete on separate evenings.</p>
+    </div>
+  </div>
+
+  <div class="quick-ref">
+    <div class="section-label">Quick Reference</div>
+    <div class="ref-grid">
+      <div class="ref-row"><span class="ref-occasion">Spring evening</span><span class="ref-pick">318 + 157</span></div>
+      <div class="ref-row"><span class="ref-occasion">Summer day</span><span class="ref-pick">149 + 346</span></div>
+      <div class="ref-row"><span class="ref-occasion">Autumn evening</span><span class="ref-pick">223 + 300</span></div>
+      <div class="ref-row"><span class="ref-occasion">Winter statement</span><span class="ref-pick">170 + 412</span></div>
+      <div class="ref-row"><span class="ref-occasion">Date night</span><span class="ref-pick">494 + 219</span></div>
+      <div class="ref-row"><span class="ref-occasion">Year-round</span><span class="ref-pick">120 + 149</span></div>
+    </div>
+  </div>
+
+  <footer>Scent Reserve · Pairing Guide · Personal Collection</footer>
+
+</div>
+</body>
+</html>

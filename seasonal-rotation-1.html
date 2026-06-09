@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seasonal Rotation · Scent Reserve</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0b08;
+  --surface: #13110d;
+  --surface2: #1c1812;
+  --gold: #c9a84c;
+  --gold-dim: #7a6330;
+  --gold-pale: rgba(201,168,76,0.08);
+  --cream: #e8dfc8;
+  --cream-dim: #8a8070;
+  --rule: rgba(201,168,76,0.2);
+  --spring: #6aab7e;
+  --summer: #d4914a;
+  --autumn: #c45a2a;
+  --winter: #5a8ab0;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'DM Mono', monospace;
+  min-height: 100vh;
+  padding: 48px 24px 80px;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0; opacity:0.7;
+}
+
+.wrap { max-width: 680px; margin: 0 auto; position:relative; z-index:1; }
+
+/* Header */
+header {
+  text-align: center;
+  margin-bottom: 56px;
+  animation: fadeDown 0.6s ease both;
+}
+
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.eyebrow {
+  font-size: 0.58rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 14px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.6rem, 7vw, 4rem);
+  font-weight: 300;
+  line-height: 1;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+
+h1 em { font-style: italic; color: var(--cream); }
+
+.rule-gold {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  margin: 18px auto;
+}
+
+.subhead {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+/* Season blocks */
+.season {
+  margin-bottom: 48px;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+.season:nth-child(1) { animation-delay: 0.1s; }
+.season:nth-child(2) { animation-delay: 0.2s; }
+.season:nth-child(3) { animation-delay: 0.3s; }
+.season:nth-child(4) { animation-delay: 0.4s; }
+
+.season-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.season-glyph {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.season-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.season-name.spring { color: var(--spring); }
+.season-name.summer { color: var(--summer); }
+.season-name.autumn { color: var(--autumn); }
+.season-name.winter { color: var(--winter); }
+
+.season-period {
+  font-size: 0.56rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  padding-bottom: 4px;
+}
+
+/* Section labels */
+.section-label {
+  font-size: 0.52rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 14px 0 8px;
+}
+
+/* Fragrance rows */
+.frag-list { display:flex; flex-direction:column; gap:4px; }
+
+.frag-row {
+  display: grid;
+  grid-template-columns: 38px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  border-radius: 2px;
+  border-left: 2px solid transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.frag-row:hover { background: var(--gold-pale); }
+
+.frag-row.core {
+  border-left-color: var(--gold);
+  background: rgba(201,168,76,0.04);
+}
+
+.frag-row.occasional { border-left-color: var(--cream-dim); }
+.frag-row.avoid { border-left-color: #8b2020; background: rgba(139,32,32,0.06); }
+
+.frag-num {
+  font-size: 0.6rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+}
+
+.frag-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem;
+  font-weight: 400;
+}
+
+.frag-row.avoid .frag-name { color: #c07070; }
+
+.frag-note {
+  font-size: 0.54rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.frag-row.avoid .frag-note { color: #8b4040; }
+
+/* Divider */
+.season-divider {
+  border: none;
+  border-top: 1px solid rgba(201,168,76,0.08);
+  margin: 40px 0 48px;
+}
+
+/* Notes box */
+.notes-box {
+  background: var(--surface2);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 20px 24px;
+  margin-top: 12px;
+}
+
+.notes-box .section-label { margin-top: 0; }
+
+.notes-box ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.notes-box li {
+  font-size: 0.62rem;
+  color: var(--cream-dim);
+  line-height: 1.65;
+  padding-left: 14px;
+  position: relative;
+  letter-spacing: 0.03em;
+}
+
+.notes-box li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--gold-dim);
+}
+
+footer {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 0.54rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  opacity: 0.35;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Scent Reserve · Personal Collection</div>
+    <h1><em>Seasonal</em> Rotation</h1>
+    <div class="rule-gold"></div>
+    <div class="subhead">What to wear · When to wear it</div>
+  </header>
+
+  <!-- SPRING -->
+  <div class="season">
+    <div class="season-head">
+      <div class="season-glyph">🌿</div>
+      <div>
+        <div class="season-name spring">Spring</div>
+        <div class="season-period">March – May &nbsp;·&nbsp; Cool to Mild &nbsp;·&nbsp; Variable Rain</div>
+      </div>
+    </div>
+    <div class="section-label">Core Rotation</div>
+    <div class="frag-list">
+      <div class="frag-row core"><div class="frag-num">318</div><div class="frag-name">Green Irish Tweed</div><div class="frag-note">Fresh fern · All day</div></div>
+      <div class="frag-row core"><div class="frag-num">157</div><div class="frag-name">Terre d'Hermès</div><div class="frag-note">Earthy · Cool days</div></div>
+      <div class="frag-row core"><div class="frag-num">120</div><div class="frag-name">Eros</div><div class="frag-note">Fresh-warm · Versatile</div></div>
+    </div>
+    <div class="section-label">Occasional</div>
+    <div class="frag-list">
+      <div class="frag-row occasional"><div class="frag-num">162</div><div class="frag-name">Bleecker Street</div><div class="frag-note">Casual · Warmer days</div></div>
+      <div class="frag-row occasional"><div class="frag-num">149</div><div class="frag-name">Baccarat Rouge 540</div><div class="frag-note">Cool evenings</div></div>
+      <div class="frag-row occasional"><div class="frag-num">219</div><div class="frag-name">Bitter Peach</div><div class="frag-note">Evening only</div></div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- SUMMER -->
+  <div class="season">
+    <div class="season-head">
+      <div class="season-glyph">☀️</div>
+      <div>
+        <div class="season-name summer">Summer</div>
+        <div class="season-period">June – August &nbsp;·&nbsp; Warm to Hot &nbsp;·&nbsp; Humid</div>
+      </div>
+    </div>
+    <div class="section-label">Core Rotation</div>
+    <div class="frag-list">
+      <div class="frag-row core"><div class="frag-num">346</div><div class="frag-name">Lime Basil &amp; Mandarin</div><div class="frag-note">Crisp · Day wear</div></div>
+      <div class="frag-row core"><div class="frag-num">318</div><div class="frag-name">Green Irish Tweed</div><div class="frag-note">Classic · All day</div></div>
+      <div class="frag-row core"><div class="frag-num">162</div><div class="frag-name">Bleecker Street</div><div class="frag-note">Light · Casual</div></div>
+    </div>
+    <div class="section-label">Occasional</div>
+    <div class="frag-list">
+      <div class="frag-row occasional"><div class="frag-num">149</div><div class="frag-name">Baccarat Rouge 540</div><div class="frag-note">Projects well in heat</div></div>
+      <div class="frag-row occasional"><div class="frag-num">120</div><div class="frag-name">Eros</div><div class="frag-note">Morning only in heat</div></div>
+    </div>
+    <div class="section-label">Avoid</div>
+    <div class="frag-list">
+      <div class="frag-row avoid"><div class="frag-num">175</div><div class="frag-name">Ombre Nomade</div><div class="frag-note">Too heavy</div></div>
+      <div class="frag-row avoid"><div class="frag-num">223</div><div class="frag-name">Tobacco Vanille</div><div class="frag-note">Overpowering in heat</div></div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- AUTUMN -->
+  <div class="season">
+    <div class="season-head">
+      <div class="season-glyph">🍂</div>
+      <div>
+        <div class="season-name autumn">Autumn</div>
+        <div class="season-period">September – November &nbsp;·&nbsp; Cooling &nbsp;·&nbsp; Damp</div>
+      </div>
+    </div>
+    <div class="section-label">Core Rotation</div>
+    <div class="frag-list">
+      <div class="frag-row core"><div class="frag-num">300</div><div class="frag-name">Angels' Share</div><div class="frag-note">Boozy-warm · All day</div></div>
+      <div class="frag-row core"><div class="frag-num">223</div><div class="frag-name">Tobacco Vanille</div><div class="frag-note">Comforting · Day–Eve</div></div>
+      <div class="frag-row core"><div class="frag-num">108</div><div class="frag-name">Halfeti</div><div class="frag-note">Complex · Evening</div></div>
+    </div>
+    <div class="section-label">Occasional</div>
+    <div class="frag-list">
+      <div class="frag-row occasional"><div class="frag-num">412</div><div class="frag-name">Tuscan Leather</div><div class="frag-note">Evening / Statement</div></div>
+      <div class="frag-row occasional"><div class="frag-num">494</div><div class="frag-name">Lost Cherry</div><div class="frag-note">Evening / Date</div></div>
+      <div class="frag-row occasional"><div class="frag-num">157</div><div class="frag-name">Terre d'Hermès</div><div class="frag-note">Cool crisp days</div></div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <!-- WINTER -->
+  <div class="season">
+    <div class="season-head">
+      <div class="season-glyph">❄️</div>
+      <div>
+        <div class="season-name winter">Winter</div>
+        <div class="season-period">December – February &nbsp;·&nbsp; Cold &nbsp;·&nbsp; Dry Indoors</div>
+      </div>
+    </div>
+    <div class="section-label">Core Rotation</div>
+    <div class="frag-list">
+      <div class="frag-row core"><div class="frag-num">175</div><div class="frag-name">Ombre Nomade</div><div class="frag-note">Heavy oud · Evenings</div></div>
+      <div class="frag-row core"><div class="frag-num">170</div><div class="frag-name">Oud Saffron</div><div class="frag-note">Spiced oud · All day</div></div>
+      <div class="frag-row core"><div class="frag-num">514</div><div class="frag-name">Black Orchid</div><div class="frag-note">Dark · Statement</div></div>
+    </div>
+    <div class="section-label">Occasional</div>
+    <div class="frag-list">
+      <div class="frag-row occasional"><div class="frag-num">223</div><div class="frag-name">Tobacco Vanille</div><div class="frag-note">Daytime warmth</div></div>
+      <div class="frag-row occasional"><div class="frag-num">412</div><div class="frag-name">Tuscan Leather</div><div class="frag-note">Cold days</div></div>
+      <div class="frag-row occasional"><div class="frag-num">300</div><div class="frag-name">Angels' Share</div><div class="frag-note">Cosy evenings</div></div>
+      <div class="frag-row occasional"><div class="frag-num">149</div><div class="frag-name">Baccarat Rouge 540</div><div class="frag-note">Works year-round</div></div>
+    </div>
+  </div>
+
+  <hr class="season-divider">
+
+  <div class="notes-box">
+    <div class="section-label">Notes</div>
+    <ul>
+      <li>Temperature matters as much as the calendar. A cold June day calls for autumn picks; a warm October calls for spring ones.</li>
+      <li>Heavy ouds (175, 170) amplify indoors with central heating — go lighter on application in winter.</li>
+      <li>318 (Green Irish Tweed) and 149 (Baccarat Rouge 540) are your two genuine year-rounders. When in doubt, reach for one of these.</li>
+      <li>Your summer range is thin — only three fragrances genuinely work in heat. Worth considering if you expand the collection.</li>
+    </ul>
+  </div>
+
+  <footer>Scent Reserve · Seasonal Rotation Guide · Personal Collection</footer>
+
+</div>
+</body>
+</html>
