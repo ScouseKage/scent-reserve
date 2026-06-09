@@ -790,24 +790,34 @@ function scoreFrag(frag, weather, state, excluded, occasion) {
   // Temperature range hard limits
   if (temp < frag.minTemp || temp > frag.maxTemp) score -= 80;
 
-  // Season match
+  // Season match — much stronger penalty for out-of-season fragrances
   const month = new Date().getMonth();
   const curSeason = month <= 1 || month === 11 ? 'wi'
     : month <= 4 ? 'sp'
     : month <= 7 ? 'su'
     : 'au';
-  if (!frag.seasons.includes(curSeason)) score -= 30;
 
-  // Recency penalty
+  if (!frag.seasons.includes(curSeason)) {
+    // Hard block for single-season specialists worn completely out of season
+    const isSpecialist = frag.seasons.length === 1;
+    score -= isSpecialist ? 70 : 45;
+  } else {
+    // In-season bonus — reward fragrances that belong right now
+    score += 15;
+    // Extra bonus if it's a core season match (listed first)
+    if (frag.seasons[0] === curSeason) score += 10;
+  }
+
+  // Recency penalty — cap the never-worn bonus so it can't override season
   if (state) {
     const d = daysSince(state.lastWorn);
     if (d === 0) score -= 100;
     else if (d === 1) score -= 40;
     else if (d <= 3) score -= 10;
-    if (d > 14) score += 15;
-    if (d > 30) score += 10;
+    if (d > 14) score += 10; // reduced from 15 — recency shouldn't beat season
+    if (d > 30) score += 5;  // reduced from 10
   } else {
-    score += 5;
+    score += 3; // reduced from 5 — never worn bonus much smaller
   }
 
   // Low bottle penalty
@@ -817,11 +827,14 @@ function scoreFrag(frag, weather, state, excluded, occasion) {
     if (pct < 0.05) score -= 20;
   }
 
-  // Weather bonuses
-  if (frag.id === '318' && weather.isRain) score += 20;
-  if (frag.id === '149') score += 10;
+  // Weather bonuses — stronger for the fragrances that genuinely suit today
+  if (frag.id === '318' && (weather.isRain || temp < 18)) score += 30; // GIT loves cool damp
+  if (frag.id === '157' && (weather.isRain || temp < 18)) score += 25; // TdH loves cool damp
+  if (frag.id === '149') score += 10; // BR540 year-round bonus
   if ((frag.id === '175' || frag.id === '170') && temp > 12) score -= 50;
   if ((frag.id === '346' || frag.id === '162') && temp < 14) score -= 40;
+  // Penalise evening/dark fragrances in daytime mild/cool conditions
+  if (['219','494','514','412','108'].includes(frag.id) && temp >= 10 && temp <= 18) score -= 15;
 
   // ── Occasion scoring ──────────────────────────────────────────────────────
   if (occasion === 'casual') {
