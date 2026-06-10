@@ -717,15 +717,15 @@ const PAIRINGS = [
 ];
 
 // ── Storage ───────────────────────────────────────────────────────────────────
-async function loadState(id) {
+function loadState(id) {
   try {
-    const r = await window.storage.get('frag2:' + id);
-    return r ? JSON.parse(r.value) : null;
+    const v = localStorage.getItem('frag2:' + id);
+    return v ? JSON.parse(v) : null;
   } catch { return null; }
 }
 
-async function saveState(id, data) {
-  try { await window.storage.set('frag2:' + id, JSON.stringify(data)); }
+function saveState(id, data) {
+  try { localStorage.setItem('frag2:' + id, JSON.stringify(data)); }
   catch(e) { console.error(e); }
 }
 
@@ -1050,11 +1050,11 @@ function renderPairing(pairing, states) {
       const fid   = pairing.ids[i];
       const frag  = FRAGS.find(f => f.id === fid);
       const bMl   = frag ? frag.bottleMl || BOTTLE_ML : BOTTLE_ML;
-      let state   = await loadState(fid) || { ml: bMl, wornCount: 0 };
+      let state   = loadState(fid) || { ml: bMl, wornCount: 0 };
       state.lastWorn  = new Date().toISOString();
       state.wornCount = (state.wornCount || 0) + 1;
       state.ml        = Math.max(0, (state.ml !== undefined ? state.ml : bMl) - (pairing.sprays[i] * ML_PER_SPRAY));
-      await saveState(fid, state);
+      saveState(fid, state);
       allStates[fid] = state;
     }
 
@@ -1214,10 +1214,8 @@ document.querySelectorAll('.occ-btn').forEach(btn => {
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function run() {
   try {
-    const [weather, ...stateArr] = await Promise.all([
-      fetchWeather(),
-      ...FRAGS.map(f => loadState(f.id))
-    ]);
+    const weather = await fetchWeather();
+    const stateArr = FRAGS.map(f => loadState(f.id));
 
     currentWeather = weather;
     allStates = {};
@@ -1250,12 +1248,12 @@ document.getElementById('btnWore').addEventListener('click', async () => {
   const btn    = document.getElementById('btnWore');
   btn.disabled = true;
 
-  let state     = await loadState(currentId) || { ml: currentBottleMl, wornCount: 0 };
+  let state     = loadState(currentId) || { ml: currentBottleMl, wornCount: 0 };
   state.lastWorn  = new Date().toISOString();
   state.wornCount = (state.wornCount || 0) + 1;
   state.ml        = Math.max(0, (state.ml !== undefined ? state.ml : currentBottleMl) - (currentSprays * ML_PER_SPRAY));
 
-  await saveState(currentId, state);
+  saveState(currentId, state);
   btn.textContent = '✓ Logged — enjoy it';
   const wornEl = document.querySelector('.rec-worn');
   if (wornEl) wornEl.textContent = 'worn today';

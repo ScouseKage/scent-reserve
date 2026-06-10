@@ -386,15 +386,15 @@ const BOTTLE_ML    = 100;
 const ML_PER_SPRAY = 0.1;
 
 // ── Storage ──────────────────────────────────────────────────────────────────
-async function load(id) {
+function load(id) {
   try {
-    const r = await window.storage.get('frag2:' + id);
-    return r ? JSON.parse(r.value) : null;
+    const v = localStorage.getItem('frag2:' + id);
+    return v ? JSON.parse(v) : null;
   } catch { return null; }
 }
 
-async function save(id, data) {
-  try { await window.storage.set('frag2:' + id, JSON.stringify(data)); }
+function save(id, data) {
+  try { localStorage.setItem('frag2:' + id, JSON.stringify(data)); }
   catch(e) { console.error('Storage error', e); }
 }
 
@@ -489,25 +489,25 @@ function buildCard(frag, state) {
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
-async function init() {
+function init() {
   const list   = document.getElementById('fragList');
-  const states = await Promise.all(FRAGS.map(f => load(f.id)));
+  const states = FRAGS.map(f => load(f.id));
   list.innerHTML = FRAGS.map((f, i) => buildCard(f, states[i])).join('');
 
   // Wore today
-  list.addEventListener('click', async e => {
+  list.addEventListener('click', e => {
     const btn = e.target.closest('.wore-btn');
     if (!btn) return;
     const id   = btn.dataset.id;
     const frag = FRAGS.find(f => f.id === id);
-    let state  = await load(id) || { ml: BOTTLE_ML, wornCount: 0 };
+    let state  = load(id) || { ml: BOTTLE_ML, wornCount: 0 };
 
     state.lastWorn  = new Date().toISOString();
     state.wornCount = (state.wornCount || 0) + 1;
     const fBottleMl = frag.bottleMl || BOTTLE_ML;
     state.ml        = Math.max(0, (state.ml !== undefined ? state.ml : fBottleMl) - (frag.sprays * ML_PER_SPRAY));
 
-    await save(id, state);
+    save(id, state);
 
     const wornEl  = document.getElementById('worn-'  + id);
     const countEl = document.getElementById('count-' + id);
@@ -520,7 +520,7 @@ async function init() {
   });
 
   // Click bar to manually set level
-  list.addEventListener('click', async e => {
+  list.addEventListener('click', e => {
     const track = e.target.closest('.bottle-track');
     if (!track) return;
     const id    = track.dataset.id;
@@ -530,9 +530,9 @@ async function init() {
     const cBottleMl = cFrag ? (cFrag.bottleMl || BOTTLE_ML) : BOTTLE_ML;
     const newMl = parseFloat((ratio * cBottleMl).toFixed(1));
 
-    let state = await load(id) || { wornCount: 0, lastWorn: null };
+    let state = load(id) || { wornCount: 0, lastWorn: null };
     state.ml  = newMl;
-    await save(id, state);
+    save(id, state);
     updateBottleUI(id, newMl, cBottleMl);
   });
 }
