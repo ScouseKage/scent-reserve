@@ -519,21 +519,29 @@ function init() {
     setTimeout(() => btn.textContent = 'Wore today', 1800);
   });
 
-  // Click bar to manually set level
+  // Tap bar to type exact ml level
   list.addEventListener('click', e => {
     const track = e.target.closest('.bottle-track');
     if (!track) return;
     const id    = track.dataset.id;
-    const rect  = track.getBoundingClientRect();
-    const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const cFrag  = FRAGS.find(f => f.id === id);
     const cBottleMl = cFrag ? (cFrag.bottleMl || BOTTLE_ML) : BOTTLE_ML;
-    const newMl = parseFloat((ratio * cBottleMl).toFixed(1));
 
     let state = load(id) || { wornCount: 0, lastWorn: null };
-    state.ml  = newMl;
+    const currentMl = state.ml !== undefined ? state.ml : cBottleMl;
+
+    const input = prompt('Enter ml remaining for ' + (cFrag ? cFrag.name : id) + ' (0–' + cBottleMl + '):', currentMl.toFixed ? currentMl.toFixed(1) : currentMl);
+    if (input === null) return; // cancelled
+
+    const newMl = parseFloat(input);
+    if (isNaN(newMl) || newMl < 0 || newMl > cBottleMl) {
+      alert('Please enter a number between 0 and ' + cBottleMl);
+      return;
+    }
+
+    state.ml = parseFloat(newMl.toFixed(1));
     save(id, state);
-    updateBottleUI(id, newMl, cBottleMl);
+    updateBottleUI(id, state.ml, cBottleMl);
   });
 }
 
