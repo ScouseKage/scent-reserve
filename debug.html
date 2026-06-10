@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storage Debug</title>
+<style>
+body { background:#0d0b08; color:#e8dfc8; font-family:monospace; padding:20px; }
+h2 { color:#c9a84c; margin-bottom:16px; }
+.item { background:#13110d; border:1px solid #7a6330; padding:10px; margin-bottom:8px; border-radius:2px; word-break:break-all; font-size:0.8rem; }
+.key { color:#c9a84c; margin-bottom:4px; }
+.val { color:#8a8070; }
+button { background:rgba(201,168,76,0.1); border:1px solid #7a6330; color:#c9a84c; font-family:monospace; padding:8px 16px; cursor:pointer; margin-right:8px; margin-bottom:16px; }
+</style>
+</head>
+<body>
+<h2>localStorage Debug</h2>
+<button onclick="refresh()">Refresh</button>
+<button onclick="clearAll()">Clear All frag2 keys</button>
+<div id="output"></div>
+<script>
+function refresh() {
+  const out = document.getElementById('output');
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k.startsWith('frag2:')) keys.push(k);
+  }
+  if (keys.length === 0) {
+    out.innerHTML = '<div class="item"><div class="val">No frag2 keys found in localStorage</div></div>';
+    return;
+  }
+  out.innerHTML = keys.map(k => {
+    const v = localStorage.getItem(k);
+    return '<div class="item"><div class="key">' + k + '</div><div class="val">' + v + '</div></div>';
+  }).join('');
+}
+
+function clearAll() {
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const k = localStorage.key(i);
+    if (k.startsWith('frag2:')) localStorage.removeItem(k);
+  }
+  refresh();
+}
+
+refresh();
+</script>
+</body>
+</html>
