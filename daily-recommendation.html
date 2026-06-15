@@ -844,15 +844,15 @@ function scoreFrag(frag, weather, state, excluded, occasion) {
   }
 
   if (occasion === 'work') {
-    // Windowless office — enclosed space, central heating, no fresh air
-    // Projection amplifies significantly — must be subtle and inoffensive
-    if (['318','157'].includes(frag.id)) score += 25;       // fresh, earthy, low projection
-    if (['149'].includes(frag.id)) score += 10;             // BR540 works but keep to 1 spray
-    if (['162'].includes(frag.id)) score += 15;             // bleecker is low sillage by nature
-    if (['175','170','514','412','108'].includes(frag.id)) score -= 60; // will clear the room
-    if (['219','494'].includes(frag.id)) score -= 35;       // too sweet and evening-coded
-    if (['223','330'].includes(frag.id)) score -= 30;       // too warm and boozy for enclosed space
-    if (['120'].includes(frag.id)) score -= 15;             // Eros projects quite hard
+    // Large air-conditioned open-plan office (~100 people) — good ventilation,
+    // plenty of space. Genuinely heavy/intense fragrances still need a touch of
+    // restraint, but most of the collection is fine at normal counts.
+    if (['318','157','149'].includes(frag.id)) score += 15;  // reliable, versatile, easy
+    if (['162'].includes(frag.id)) score += 10;              // low sillage, always safe
+    if (['223','330','108','412'].includes(frag.id)) score += 10; // distinctive, work well with aircon and space
+    if (['175','170'].includes(frag.id)) score -= 35;        // still too intense even with ventilation
+    if (['514'].includes(frag.id)) score -= 15;              // theatrical — fine occasionally, not a default
+    if (['219','494'].includes(frag.id)) score -= 20;        // still evening-coded, sweetness less suited to daytime work
   }
 
   if (occasion === 'evening') {
@@ -911,10 +911,14 @@ function pickReason(frag, weather, occasion) {
 
   // Occasion-specific overrides
   const occReasons = {
-    work:    { '318': 'Green Irish Tweed is ideal for a windowless office — fresh and clean with low projection that stays close to skin.',
-               '149': 'BR540 works in an office but keep it to 1 spray — the sweetness amplifies in enclosed spaces with no fresh air.',
-               '157': "Terre d'Hermès is refined and earthy — projects quietly enough for a windowless office environment.",
-               '162': 'Bleecker Street is your lowest-sillage fragrance — a safe choice when there is no ventilation.' },
+    work:    { '318': 'Green Irish Tweed is effortless for the office — fresh, clean, and a reliable everyday choice.',
+               '149': 'BR540 is distinctive and well-liked — a great choice that stands out without trying too hard.',
+               '157': "Terre d'Hermès is refined and grown-up — exactly the kind of quiet confidence that suits the office.",
+               '162': 'Bleecker Street is light and easy — a relaxed, low-key choice for the office.',
+               '223': 'Tobacco Vanille is warm and distinctive — with the aircon and space in your office, it makes a real impression without being too much.',
+               '330': "Angels' Share is warm and memorable — a good way to stand out in a big office.",
+               '108': 'Halfeti is complex and distinctive — the kind of fragrance that gets noticed in a big space with good ventilation.',
+               '412': 'Tuscan Leather is bold and confident — your office has the space and air flow to carry it well.' },
     date:    { '149': 'BR540 is one of the great date fragrances — distinctive, warm, and universally appealing.',
                '494': 'Lost Cherry is seductive and intimate — made for close quarters.',
                '219': 'Bitter Peach is warm and boozy — intriguing without being overwhelming.',
